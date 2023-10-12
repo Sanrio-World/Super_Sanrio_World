@@ -19,4 +19,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\..\marioMap.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

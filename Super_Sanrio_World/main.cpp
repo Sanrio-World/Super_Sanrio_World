@@ -1,11 +1,20 @@
 #include<SFML/Graphics.hpp>
 #include <windows.h>
+#include <iostream>
 
+using namespace std;
 using namespace sf;
 
 int main(void)
 {
-    RenderWindow window(VideoMode(640, 480), "Super Sanrio World");
+    Texture map;
+    map.loadFromFile("resources/marioMap.bmp");
+    Sprite sprite;
+
+    sprite.setTexture(map); 
+    sprite.setTextureRect(IntRect(0, 0, 840, 480));
+
+    RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
 
     window.setFramerateLimit(60);
 
@@ -21,9 +30,9 @@ int main(void)
             if (e.type == Event::Closed) // x표를 누른다면
                 window.close();
         }
-
+        
         window.clear();
-
+        window.draw(sprite);
         window.display();
     }
 
