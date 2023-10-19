@@ -10,7 +10,7 @@ int main(void)
     Texture map;
     map.loadFromFile("resources/marioMap.bmp");
     Texture character;
-    character.loadFromFile("resources/character.png");
+    character.loadFromFile("resources/kitty.gif");
     Sprite mapSprite;
     Sprite characterSprite;
     
