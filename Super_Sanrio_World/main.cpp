@@ -9,10 +9,17 @@ int main(void)
 {
     Texture map;
     map.loadFromFile("resources/marioMap.bmp");
-    Sprite sprite;
+    Texture character;
+    character.loadFromFile("resources/kitty.gif");
+    Sprite mapSprite;
+    Sprite characterSprite;
+    
+    characterSprite.setTexture(character);
+    characterSprite.setPosition(60,353);
 
-    sprite.setTexture(map); 
-    sprite.setTextureRect(IntRect(0, 0, 840, 480));
+    mapSprite.setTexture(map);
+    mapSprite.setTextureRect(IntRect(0, 0, 840, 480));
+    
 
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
 
@@ -26,13 +33,14 @@ int main(void)
         Event e;
         while (window.pollEvent(e))
         {
-            // 윈도우의 x를 눌렀을 때 창이 닫아지도록
-            if (e.type == Event::Closed) // x표를 누른다면
+            
+            if (e.type == Event::Closed) 
                 window.close();
         }
         
         window.clear();
-        window.draw(sprite);
+        window.draw(mapSprite);
+        window.draw(characterSprite);
         window.display();
     }
 
