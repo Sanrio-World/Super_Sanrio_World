@@ -17,19 +17,21 @@ int main(void)
 
     Texture map;
     map.loadFromFile("resources/marioMap.bmp");
-    Sprite mapSprite;
+    Sprite mapSprite(map);
 
     Texture kitty;
     kitty.loadFromFile("resources/kitty.gif");
-    Sprite kittySprite;
+    Sprite kittySprite(kitty);
     
     Position kittyPos;
     kittyPos.x = 60;
     kittyPos.y = 350;
 
-    kittySprite.setTexture(kitty);
+    Texture apple;
+    apple.loadFromFile("resource/apple.png");
+    Sprite appleSprite(apple);
     
-    mapSprite.setTexture(map);
+   
     mapSprite.setTextureRect(IntRect(0, 0, 840, 480));
    
     const int gravity = 10;
