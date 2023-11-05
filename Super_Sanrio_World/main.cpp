@@ -2,47 +2,86 @@
 #include <windows.h>
 #include <iostream>
 
+#define WIDTH 840
+#define HEIGHT 480
 using namespace std;
 using namespace sf;
 
+struct Position {
+	int x;
+	int y;
+};
 int main(void)
 {
-    Texture map;
-    map.loadFromFile("resources/marioMap.bmp");
-    Texture character;
-    character.loadFromFile("resources/kitty.gif");
-    Sprite mapSprite;
-    Sprite characterSprite;
-    
-    characterSprite.setTexture(character);
-    characterSprite.setPosition(60,353);
 
-    mapSprite.setTexture(map);
-    mapSprite.setTextureRect(IntRect(0, 0, 840, 480));
-    
+	RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
+	window.setFramerateLimit(60);
 
-    RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
+	Texture map;
+	map.loadFromFile("resources/marioMap.bmp");
+	Sprite mapSprite(map);
+	mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
-    window.setFramerateLimit(60);
+	Texture kitty;
+	kitty.loadFromFile("resources/kitty.gif");
+	Sprite kittySprite(kitty);
 
-    HWND hWndConsole = GetConsoleWindow();
-    ShowWindow(hWndConsole, SW_HIDE);
+	Position kittyPos;
+	kittyPos.x = 60;
+	kittyPos.y = 350;
 
-    while (window.isOpen())
-    {
-        Event e;
-        while (window.pollEvent(e))
-        {
-            
-            if (e.type == Event::Closed) 
-                window.close();
-        }
-        
-        window.clear();
-        window.draw(mapSprite);
-        window.draw(characterSprite);
-        window.display();
-    }
+	Texture apple;
+	apple.loadFromFile("resources/apple.png");
+	Sprite appleSprite(apple);
+	Position applePos;
+	applePos.x = 100;
+	applePos.y = 370;
 
-    return 0;
+	const int gravity = 10;
+
+	while (window.isOpen())
+	{
+		Event e;
+		while (window.pollEvent(e))
+		{
+
+			if (e.type == Event::Closed)
+				window.close();
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+			kittyPos.y -= gravity;
+		}
+		else {
+			kittyPos.y = 350;
+		}
+		kittySprite.setPosition(kittyPos.x, kittyPos.y);
+
+		if (applePos.x <= 0)
+		{
+			applePos.x = WIDTH;
+		}
+		else
+		{
+			applePos.x -= 5;
+		}
+		appleSprite.setPosition(applePos.x, applePos.y);
+
+
+
+
+		HWND hWndConsole = GetConsoleWindow();
+		ShowWindow(hWndConsole, SW_HIDE);
+
+
+
+
+		window.clear();
+		window.draw(mapSprite);
+		window.draw(kittySprite);
+		window.draw(appleSprite);
+		window.display();
+	}
+
+	return 0;
 }
