@@ -2,39 +2,91 @@
 #include <windows.h>
 #include <iostream>
 
+#define WIDTH 840
+#define HEIGHT 480
 using namespace std;
 using namespace sf;
 
+struct Position {
+	int x;
+	int y;
+};
 int main(void)
 {
-    Texture map;
-    map.loadFromFile("resources/marioMap.bmp");
-    Sprite sprite;
 
-    sprite.setTexture(map); 
-    sprite.setTextureRect(IntRect(0, 0, 840, 480));
+	RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
+	window.setFramerateLimit(60);
 
-    RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
+	Texture map;
+	map.loadFromFile("resources/marioMap.bmp");
+	Sprite mapSprite(map);
+	mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
-    window.setFramerateLimit(60);
+	Texture kitty;
+	kitty.loadFromFile("resources/kitty.gif");
+	Sprite kittySprite(kitty);
 
-    HWND hWndConsole = GetConsoleWindow();
-    ShowWindow(hWndConsole, SW_HIDE);
+	Position kittyPos;
+	kittyPos.x = 60;
+	kittyPos.y = 350;
 
-    while (window.isOpen())
-    {
-        Event e;
-        while (window.pollEvent(e))
-        {
-            // 윈도우의 x를 눌렀을 때 창이 닫아지도록
-            if (e.type == Event::Closed) // x표를 누른다면
-                window.close();
-        }
-        
-        window.clear();
-        window.draw(sprite);
-        window.display();
-    }
+	Texture apple;
+	apple.loadFromFile("resources/apple.png");
+	Sprite appleSprite(apple);
+	Position applePos;
+	applePos.x = 100;
+	applePos.y = 370;
 
+<<<<<<< HEAD
     return 0;
 }             
+=======
+	const int gravity = 10;
+
+	while (window.isOpen())
+	{
+		Event e;
+		while (window.pollEvent(e))
+		{
+
+			if (e.type == Event::Closed)
+				window.close();
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Space)) {
+			kittyPos.y -= gravity;
+		}
+		else {
+			kittyPos.y = 350;
+		}
+		kittySprite.setPosition(kittyPos.x, kittyPos.y);
+
+		if (applePos.x <= 0)
+		{
+			applePos.x = WIDTH;
+		}
+		else
+		{
+			applePos.x -= 5;
+		}
+		appleSprite.setPosition(applePos.x, applePos.y);
+
+
+
+
+		HWND hWndConsole = GetConsoleWindow();
+		ShowWindow(hWndConsole, SW_HIDE);
+
+
+
+
+		window.clear();
+		window.draw(mapSprite);
+		window.draw(kittySprite);
+		window.draw(appleSprite);
+		window.display();
+	}
+
+	return 0;
+}
+>>>>>>> 4859266a31837dad791d10e730ea510942c25252
