@@ -37,10 +37,6 @@ int main(void)
 	applePos.x = 100;
 	applePos.y = 370;
 
-<<<<<<< HEAD
-    return 0;
-}             
-=======
 	const int gravity = 10;
 
 	while (window.isOpen())
@@ -87,6 +83,5 @@ int main(void)
 		window.display();
 	}
 
-	return 0;
-}
->>>>>>> 4859266a31837dad791d10e730ea510942c25252
+    return 0;
+}             
