@@ -139,10 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="jisu_test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\..\..\marioMap.bmp" />
+    <Image Include="resources\sanrioMap.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
