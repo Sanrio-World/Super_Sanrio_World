@@ -18,7 +18,7 @@ int main(void)
 	window.setFramerateLimit(60);
 
 	Texture map;
-	map.loadFromFile("resources/marioMap.bmp");
+	map.loadFromFile("resources/map.png");
 	Sprite mapSprite(map);
 	mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
@@ -57,7 +57,7 @@ int main(void)
 		}
 		kittySprite.setPosition(kittyPos.x, kittyPos.y);
 
-		if (applePos.x <= 0)
+		if (applePos.x <= -1)
 		{
 			applePos.x = WIDTH;
 		}
