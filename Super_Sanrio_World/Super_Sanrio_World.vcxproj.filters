@@ -15,16 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="jisu_test.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="..\..\..\..\..\marioMap.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="resources\sanrioMap.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="resources\cloud1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="resources\cloud2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="jisu_test.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
