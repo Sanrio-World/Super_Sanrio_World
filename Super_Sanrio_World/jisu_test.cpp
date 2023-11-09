@@ -13,6 +13,10 @@ struct Position {
 };
 int main(void)
 {
+    const int changeCharacter = 5;
+    int index = 0;
+    float frame = 0.f;
+    float frameSpeed = 0.8f;
 
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
@@ -22,9 +26,13 @@ int main(void)
     Sprite mapSprite(map);
     mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
-    Texture kitty;
-    kitty.loadFromFile("resources/kitty.gif");
-    Sprite kittySprite(kitty);
+    Texture kitty1;
+    kitty1.loadFromFile("resources/character1.png");
+    Texture kitty2;
+    kitty2.loadFromFile("resources/character2.png");
+    Sprite kittySprite[2];
+    kittySprite[0] = Sprite(kitty1);
+    kittySprite[1] = Sprite(kitty2);
 
     Position kittyPos;
     kittyPos.x = 70;
@@ -71,7 +79,7 @@ int main(void)
         else {
             kittyPos.y = 320;
         }
-        kittySprite.setPosition(kittyPos.x, kittyPos.y);
+        kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
         if (applePos.x <= 0)
         {
@@ -96,6 +104,14 @@ int main(void)
         }
 
 
+        //캐릭터 다리움직임ㄴ
+        frame += frameSpeed;
+        if (frame > changeCharacter) {
+            frame -= changeCharacter;
+            index++;
+            if (index >= 2) index = 0;
+        }
+
 
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
@@ -105,7 +121,7 @@ int main(void)
 
         window.clear();
         window.draw(mapSprite);
-        window.draw(kittySprite);
+        window.draw(kittySprite[index]);
         window.draw(appleSprite);
         for (int i = 0; i < cloudCnt; i++) {
             window.draw(cloudSprite[i]);
