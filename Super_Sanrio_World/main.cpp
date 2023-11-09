@@ -83,5 +83,5 @@ int main(void)
 		window.display();
 	}
 
-	return 0;
-}
+    return 0;
+}             
