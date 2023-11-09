@@ -18,7 +18,7 @@ int main(void)
     window.setFramerateLimit(60);
 
     Texture map;
-    map.loadFromFile("resources/sanrioMap.bmp");
+    map.loadFromFile("resources/sanrio_map.png");
     Sprite mapSprite(map);
     mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
@@ -27,8 +27,8 @@ int main(void)
     Sprite kittySprite(kitty);
 
     Position kittyPos;
-    kittyPos.x = 60;
-    kittyPos.y = 350;
+    kittyPos.x = 70;
+    kittyPos.y = 100;
 
     Texture apple;
     apple.loadFromFile("resources/apple.png");
@@ -69,7 +69,7 @@ int main(void)
             kittyPos.y -= gravity;
         }
         else {
-            kittyPos.y = 350;
+            kittyPos.y = 320;
         }
         kittySprite.setPosition(kittyPos.x, kittyPos.y);
 
@@ -90,7 +90,7 @@ int main(void)
             }
             else
             {
-                cloudPos[i].x -= 2+i;
+                cloudPos[i].x -= 2+(i*2);
             }
             cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
         }

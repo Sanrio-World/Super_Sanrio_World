@@ -143,6 +143,7 @@
     <Image Include="resources\cloud1.png" />
     <Image Include="resources\cloud2.png" />
     <Image Include="resources\sanrioMap.bmp" />
+    <Image Include="resources\sanrio_map.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jisu_test.cpp" />
