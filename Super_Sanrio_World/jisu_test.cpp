@@ -73,7 +73,7 @@ int main(void)
                 window.close();
         }
 
-        if (Keyboard::isKeyPressed(Keyboard::Space)) {
+        if (Keyboard::isKeyPressed(Keyboard::Up)) {
             kittyPos.y -= gravity;
         }
         else {
