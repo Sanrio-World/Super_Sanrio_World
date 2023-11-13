@@ -13,14 +13,18 @@ struct Position {
 };
 int main(void)
 {
-    const int changeCharacter = 5;
-    int index = 0;
-    float frame = 0.f;
-    float frameSpeed = 0.8f;
-
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
+    const int changeCharacter = 7;
+    int index = 0;
+    float frame = 0.f;
+    float frameSpeed = 0.4f;
+
+    const int gravity = 10;
+    bool isJumping = false;
+    bool isBottom = true;
+  
     Texture map;
     map.loadFromFile("resources/sanrio_map.png");
     Sprite mapSprite(map);
@@ -34,9 +38,11 @@ int main(void)
     kittySprite[0] = Sprite(kitty1);
     kittySprite[1] = Sprite(kitty2);
 
+    const int KITTY_Y_BOTTOM = HEIGHT - 150;
+
     Position kittyPos;
     kittyPos.x = 70;
-    kittyPos.y = 100;
+    kittyPos.y = KITTY_Y_BOTTOM;
 
     Texture apple;
     apple.loadFromFile("resources/apple.png");
@@ -61,8 +67,6 @@ int main(void)
         cloudSprite[i].setTexture(cloud[i]);
     }
 
-    const int gravity = 10;
-
     while (window.isOpen())
     {
         Event e;
@@ -74,10 +78,28 @@ int main(void)
         }
 
         if (Keyboard::isKeyPressed(Keyboard::Up)) {
+            if (isBottom==true && isJumping==false) {
+                isJumping = true;
+                isBottom = false;
+            }
+        }
+        if (isJumping==true)
+        {
             kittyPos.y -= gravity;
         }
         else {
-            kittyPos.y = 320;
+            kittyPos.y += gravity;
+        }
+
+        //점프하고 있지 않을 시 Y값에 있도록
+        if (kittyPos.y >= KITTY_Y_BOTTOM) {
+            kittyPos.y = KITTY_Y_BOTTOM;
+            isBottom = true;
+        }
+        //점프 높이 제한
+        if (kittyPos.y <= KITTY_Y_BOTTOM -100)
+        {
+            isJumping = false;
         }
         kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
@@ -103,7 +125,6 @@ int main(void)
             cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
         }
 
-
         //캐릭터 다리움직임ㄴ
         frame += frameSpeed;
         if (frame > changeCharacter) {
@@ -112,12 +133,8 @@ int main(void)
             if (index >= 2) index = 0;
         }
 
-
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
-
-
-
 
         window.clear();
         window.draw(mapSprite);
