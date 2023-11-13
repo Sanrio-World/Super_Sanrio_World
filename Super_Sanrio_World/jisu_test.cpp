@@ -16,7 +16,7 @@ int main(void)
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
-    const int changeCharacter = 7;
+    const int changeCharacter =5;
     int index = 0;
     float frame = 0.f;
     float frameSpeed = 0.4f;
@@ -67,12 +67,29 @@ int main(void)
         cloudSprite[i].setTexture(cloud[i]);
     }
 
+    Clock clock;
+    float seconds = 0.0f;
+    int score = 0;
+    
+    Font font;
+    if (!font.loadFromFile("C:\\Windows\\Fonts\\H2GSRB.ttf"))
+    {
+        printf("폰트 불러오기 실패\n");
+        return -1;
+    }
+    Text scoreText;
+    scoreText.setFont(font);
+    scoreText.setCharacterSize(30);
+    scoreText.setFillColor(Color::White);
+    scoreText.setPosition(0, 0);
+  
+
     while (window.isOpen())
     {
         Event e;
         while (window.pollEvent(e))
         {
-
+        
             if (e.type == Event::Closed)
                 window.close();
         }
@@ -125,7 +142,7 @@ int main(void)
             cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
         }
 
-        //캐릭터 다리움직임ㄴ
+        //캐릭터 다리움직임
         frame += frameSpeed;
         if (frame > changeCharacter) {
             frame -= changeCharacter;
@@ -133,13 +150,21 @@ int main(void)
             if (index >= 2) index = 0;
         }
 
+        //점수
+        seconds += clock.restart().asSeconds();
+        if (seconds >= 0.3f) {
+            score++;
+            seconds = 0.0f;
+        }
+        scoreText.setString("Score: " +to_string(score));
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
-
+       
         window.clear();
         window.draw(mapSprite);
         window.draw(kittySprite[index]);
         window.draw(appleSprite);
+        window.draw(scoreText);
         for (int i = 0; i < cloudCnt; i++) {
             window.draw(cloudSprite[i]);
         }
