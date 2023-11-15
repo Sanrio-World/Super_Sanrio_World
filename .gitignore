@@ -7,3 +7,6 @@
 /Super_Sanrio_World/Debug
 
 *.suo
+/Super_Sanrio_World/x64/Debug
+/.vs/Super_Sanrio_World/v17
+/.vs
