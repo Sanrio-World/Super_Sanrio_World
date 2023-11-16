@@ -110,18 +110,39 @@ int main(void)
             if (e.type == Event::Closed)
                 window.close();
 
+            // 키가 눌렸을 때
             if (e.type == Event::KeyPressed) {
+
+                // 시작화면에서 Enter Key가 눌렸을 때
                 if (e.key.code == Keyboard::Enter && currentP == StartP ) {
                     currentP = GameP; // Enter 키를 누르면 게임 화면으로 전환
+                }
+
+                // 게임화면에서 Up Key가 눌렸을 때
+                if (e.key.code == Keyboard::Up && currentP == GameP) {
+                    if (isBottom == true && isJumping == false) {
+                        isJumping = true;
+                        isBottom = false;
+                    }
                 }
             }
         }
 
         if (currentP == StartP) {
+            window.clear();
             // 시작화면에서 게임화면으로 넘어가게
             window.draw(startPage_Sprite);
         }
         else if (currentP == GameP) {
+            //점수
+            seconds += clock.restart().asSeconds();
+            if (seconds >= 0.3f) {
+                score++;
+                seconds = 0.0f;
+            }
+            scoreText.setString("Score: " + to_string(score));
+
+            window.clear();
             window.draw(mapSprite);
             window.draw(kittySprite[index]);
             window.draw(appleSprite);
@@ -131,14 +152,6 @@ int main(void)
             }
         }
 
-        
-
-        if (Keyboard::isKeyPressed(Keyboard::Up)) {
-            if (isBottom == true && isJumping == false) {
-                isJumping = true;
-                isBottom = false;
-            }
-        }
         if (isJumping == true)
         {
             kittyPos.y -= gravity;
@@ -189,13 +202,7 @@ int main(void)
             if (index >= 2) index = 0;
         }
 
-        //점수
-        seconds += clock.restart().asSeconds();
-        if (seconds >= 0.3f) {
-            score++;
-            seconds = 0.0f;
-        }
-        scoreText.setString("Score: " + to_string(score));
+        
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
 
