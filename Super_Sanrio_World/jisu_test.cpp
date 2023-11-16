@@ -16,7 +16,7 @@ int main(void)
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
-    const int changeCharacter =5;
+    const int changeCharacter = 5;
     int index = 0;
     float frame = 0.f;
     float frameSpeed = 0.4f;
@@ -24,7 +24,7 @@ int main(void)
     const int gravity = 10;
     bool isJumping = false;
     bool isBottom = true;
-  
+
     Texture map;
     map.loadFromFile("resources/sanrio_map.png");
     Sprite mapSprite(map);
@@ -70,7 +70,7 @@ int main(void)
     Clock clock;
     float seconds = 0.0f;
     int score = 0;
-    
+
     Font font;
     if (!font.loadFromFile("C:\\Windows\\Fonts\\H2GSRB.ttf"))
     {
@@ -82,25 +82,25 @@ int main(void)
     scoreText.setCharacterSize(30);
     scoreText.setFillColor(Color::White);
     scoreText.setPosition(0, 0);
-  
+
 
     while (window.isOpen())
     {
         Event e;
         while (window.pollEvent(e))
         {
-        
+
             if (e.type == Event::Closed)
                 window.close();
         }
 
         if (Keyboard::isKeyPressed(Keyboard::Up)) {
-            if (isBottom==true && isJumping==false) {
+            if (isBottom == true && isJumping == false) {
                 isJumping = true;
                 isBottom = false;
             }
         }
-        if (isJumping==true)
+        if (isJumping == true)
         {
             kittyPos.y -= gravity;
         }
@@ -114,7 +114,7 @@ int main(void)
             isBottom = true;
         }
         //점프 높이 제한
-        if (kittyPos.y <= KITTY_Y_BOTTOM -100)
+        if (kittyPos.y <= KITTY_Y_BOTTOM - 100)
         {
             isJumping = false;
         }
@@ -137,7 +137,7 @@ int main(void)
             }
             else
             {
-                cloudPos[i].x -= 2+(i*2);
+                cloudPos[i].x -= 2 + (i * 2);
             }
             cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
         }
@@ -156,10 +156,10 @@ int main(void)
             score++;
             seconds = 0.0f;
         }
-        scoreText.setString("Score: " +to_string(score));
+        scoreText.setString("Score: " + to_string(score));
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
-       
+
         window.clear();
         window.draw(mapSprite);
         window.draw(kittySprite[index]);
