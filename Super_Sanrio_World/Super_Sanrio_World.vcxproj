@@ -143,10 +143,19 @@
     <Image Include="resources\cloud1.png" />
     <Image Include="resources\cloud2.png" />
     <Image Include="resources\sanrioMap.bmp" />
+    <Image Include="resources\startpage.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="character.cpp" />
-    <ClCompile Include="jisu_test.cpp" />
+    <ClCompile Include="jisu_test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="start_page.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
