@@ -114,7 +114,11 @@ int main(void)
             isBottom = true;
         }
         //점프 높이 제한
+<<<<<<< HEAD
+        if (kittyPos.y <= KITTY_Y_BOTTOM -150)
+=======
         if (kittyPos.y <= KITTY_Y_BOTTOM - 100)
+>>>>>>> 03cc201a0b14a48eecbf6b3ce705cae0ea284ff6
         {
             isJumping = false;
         }
