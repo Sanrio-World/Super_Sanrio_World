@@ -44,12 +44,7 @@ int main(void)
     kittyPos.x = 70;
     kittyPos.y = KITTY_Y_BOTTOM;
 
-    Texture apple;
-    apple.loadFromFile("resources/apple.png");
-    Sprite appleSprite(apple);
-    Position applePos;
-    applePos.x = 100;
-    applePos.y = 370;
+   
 
     const int cloudCnt = 2;
 
@@ -82,7 +77,11 @@ int main(void)
     scoreText.setCharacterSize(30);
     scoreText.setFillColor(Color::White);
     scoreText.setPosition(0, 0);
-
+    
+    bool appleExist = false;
+    bool tupliExist = false;
+    float appleTimer = 0.0f;
+    const float appleDelay = 1.0f;
 
     while (window.isOpen())
     {
@@ -114,25 +113,20 @@ int main(void)
             isBottom = true;
         }
         //점프 높이 제한
-<<<<<<< HEAD
         if (kittyPos.y <= KITTY_Y_BOTTOM -150)
-=======
-        if (kittyPos.y <= KITTY_Y_BOTTOM - 100)
->>>>>>> 03cc201a0b14a48eecbf6b3ce705cae0ea284ff6
         {
             isJumping = false;
         }
         kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
-        if (applePos.x <= 0)
-        {
-            applePos.x = WIDTH;
+        if (!appleExist) {
+            appleTimer += clock.restart().asSeconds();
+            if (appleTimer >= appleDelay) {
+                appleExist = true;
+                appleTimer = 0.0f;
+            }
         }
-        else
-        {
-            applePos.x -= 5;
-        }
-        appleSprite.setPosition(applePos.x, applePos.y);
+        
 
         for (int i = 0; i < cloudCnt; i++) {
             if (cloudPos[i].x <= 0)
@@ -145,6 +139,8 @@ int main(void)
             }
             cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
         }
+
+       
 
         //캐릭터 다리움직임
         frame += frameSpeed;
@@ -167,11 +163,11 @@ int main(void)
         window.clear();
         window.draw(mapSprite);
         window.draw(kittySprite[index]);
-        window.draw(appleSprite);
         window.draw(scoreText);
         for (int i = 0; i < cloudCnt; i++) {
             window.draw(cloudSprite[i]);
         }
+    
         window.display();
     }
 

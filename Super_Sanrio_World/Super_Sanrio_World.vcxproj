@@ -143,6 +143,8 @@
     <Image Include="resources\cloud1.png" />
     <Image Include="resources\cloud2.png" />
     <Image Include="resources\cloud3.png" />
+    <Image Include="resources\obstacle1.png" />
+    <Image Include="resources\obstacle2.png" />
     <Image Include="resources\sanrioMap.bmp" />
     <Image Include="resources\startpage.png" />
   </ItemGroup>

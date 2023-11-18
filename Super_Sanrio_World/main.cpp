@@ -55,13 +55,18 @@ int main(void)
     kittyPos.x = 70;
     kittyPos.y = KITTY_Y_BOTTOM;
 
-    Texture apple;
-    apple.loadFromFile("resources/apple.png");
-    Sprite appleSprite(apple);
-    Position applePos;
-    applePos.x = 100;
-    applePos.y = 370;
+    const int obstacleCnt = 2;
+    Texture obstacle[obstacleCnt];
+    Position obstaclePos[obstacleCnt];
+    Sprite obstacleSprite[obstacleCnt];
+    obstacle[0].loadFromFile("resources/obstacle1.png");
+    obstacle[1].loadFromFile("resources/obstacle2.png");
 
+    for (int i = 0; i < obstacleCnt; i++) {
+        obstaclePos[i].x = 240;
+        obstaclePos[i].y = 350;
+        obstacleSprite[i].setTexture(obstacle[i]);
+    }
     const int cloudCnt = 5;
 
     Texture cloud[cloudCnt];
@@ -151,10 +156,12 @@ int main(void)
             window.clear();
             window.draw(mapSprite);
             window.draw(kittySprite[index]);
-            window.draw(appleSprite);
             window.draw(scoreText);
             for (int i = 0; i < cloudCnt; i++) {
                 window.draw(cloudSprite[i]);
+            }
+            for (int i = 0; i < obstacleCnt; i++) {
+                window.draw(obstacleSprite[i]);
             }
         }
 
@@ -172,21 +179,23 @@ int main(void)
             isBottom = true;
         }
         //점프 높이 제한
-        if (kittyPos.y <= KITTY_Y_BOTTOM - 100)
+        if (kittyPos.y <= KITTY_Y_BOTTOM - 180)
         {
             isJumping = false;
         }
         kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
-        if (applePos.x <= 0)
-        {
-            applePos.x = WIDTH;
+        for (int i = 0; i < obstacleCnt; i++) {
+            if (obstaclePos[i].x <= 0)
+            {
+                obstaclePos[i].x = WIDTH;
+            }
+            else
+            {
+                obstaclePos[i].x -= 2 + (i * 2);
+            }
+            obstacleSprite[i].setPosition(obstaclePos[i].x, obstaclePos[i].y);
         }
-        else
-        {
-            applePos.x -= 5;
-        }
-        appleSprite.setPosition(applePos.x, applePos.y);
 
         // 구름 움직임
         for (int i = 0; i < cloudCnt; i++) {
@@ -212,11 +221,6 @@ int main(void)
         
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
-
-        //window.clear();
-
-        
-
         window.display();
     }
 
