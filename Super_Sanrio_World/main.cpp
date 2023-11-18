@@ -34,7 +34,7 @@ int main(void)
     bool isJumping = false;
     bool isBottom = true;
 
-    CurrentP currentP = CurrentP::StartP;
+    CurrentP currentP = StartP;
 
     Texture map;
     map.loadFromFile("resources/sanrio_map.png");
@@ -62,7 +62,7 @@ int main(void)
     applePos.x = 100;
     applePos.y = 370;
 
-    const int cloudCnt = 2;
+    const int cloudCnt = 5;
 
     Texture cloud[cloudCnt];
     Position cloudPos[cloudCnt];
@@ -70,11 +70,14 @@ int main(void)
 
     cloud[0].loadFromFile("resources/cloud1.png");
     cloud[1].loadFromFile("resources/cloud2.png");
+    cloud[2].loadFromFile("resources/cloud3.png");
+    cloud[3].loadFromFile("resources/cloud1.png");
+    cloud[4].loadFromFile("resources/cloud2.png");
 
 
     for (int i = 0; i < cloudCnt; i++) {
         cloudPos[i].x = 10;
-        cloudPos[i].y = 60;
+        cloudPos[i].y = 60 + (i * 15);
         cloudSprite[i].setTexture(cloud[i]);
     }
 
@@ -107,8 +110,10 @@ int main(void)
         while (window.pollEvent(e))
         {
 
-            if (e.type == Event::Closed)
+            if (e.type == Event::Closed) {
                 window.close();
+                cout << "Window is closed." << endl;
+            }
 
             // 키가 눌렸을 때
             if (e.type == Event::KeyPressed) {
@@ -116,6 +121,7 @@ int main(void)
                 // 시작화면에서 Enter Key가 눌렸을 때
                 if (e.key.code == Keyboard::Enter && currentP == StartP ) {
                     currentP = GameP; // Enter 키를 누르면 게임 화면으로 전환
+                    cout << "Switched to GameP." << endl;
                 }
 
                 // 게임화면에서 Up Key가 눌렸을 때
@@ -133,7 +139,7 @@ int main(void)
             // 시작화면에서 게임화면으로 넘어가게
             window.draw(startPage_Sprite);
         }
-        else if (currentP == GameP) {
+        if (currentP == GameP) {
             //점수
             seconds += clock.restart().asSeconds();
             if (seconds >= 0.3f) {
@@ -182,14 +188,15 @@ int main(void)
         }
         appleSprite.setPosition(applePos.x, applePos.y);
 
+        // 구름 움직임
         for (int i = 0; i < cloudCnt; i++) {
-            if (cloudPos[i].x <= 0)
+            if (cloudPos[i].x <= -110)
             {
-                cloudPos[i].x = WIDTH;
+                cloudPos[i].x = WIDTH + 10;
             }
             else
             {
-                cloudPos[i].x -= 2 + (i * 2);
+                cloudPos[i].x -= 2 + i;
             }
             cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
         }

@@ -30,6 +30,9 @@
     <Image Include="resources\startpage.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="resources\cloud3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="jisu_test.cpp">

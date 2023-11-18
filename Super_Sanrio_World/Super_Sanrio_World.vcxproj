@@ -142,11 +142,14 @@
     <Image Include="..\..\..\..\..\marioMap.bmp" />
     <Image Include="resources\cloud1.png" />
     <Image Include="resources\cloud2.png" />
+    <Image Include="resources\cloud3.png" />
     <Image Include="resources\sanrioMap.bmp" />
     <Image Include="resources\startpage.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="character.cpp" />
+    <ClCompile Include="character.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="jisu_test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
