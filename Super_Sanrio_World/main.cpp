@@ -27,8 +27,8 @@ int main(void)
 
     const int changeCharacter = 5;
     int index = 0;
-    float frame = 0.f;
-    float frameSpeed = 0.4f;
+    float frame = 0.0f;
+    float frameSpeed = 0.2f;
 
     const int gravity = 10;
     bool isJumping = false;
@@ -49,7 +49,7 @@ int main(void)
     kittySprite[0] = Sprite(kitty1);
     kittySprite[1] = Sprite(kitty2);
 
-    const int KITTY_Y_BOTTOM = HEIGHT - 150;
+    const int KITTY_Y_BOTTOM = 350;
 
     Position kittyPos;
     kittyPos.x = 70;
@@ -168,6 +168,7 @@ int main(void)
         if (isJumping == true)
         {
             kittyPos.y -= gravity;
+            kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
         }
         else {
             kittyPos.y += gravity;
@@ -215,7 +216,7 @@ int main(void)
         if (frame > changeCharacter) {
             frame -= changeCharacter;
             index++;
-            if (index >= 2) index = 0;
+            if (index >=2) index = 0;
         }
 
         
