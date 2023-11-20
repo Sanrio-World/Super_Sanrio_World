@@ -163,74 +163,74 @@ int main(void)
 			for (int i = 0; i < obstacleCnt; i++) {
 				window.draw(obstacleSprite[i]);
 			}
-		}
-	
 
 
-		if (isJumping == true)
-		{
-			kittyPos.y -= gravity;
+
+
+			if (isJumping == true)
+			{
+				kittyPos.y -= gravity;
+				kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+			}
+			else {
+				kittyPos.y += gravity;
+				kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+
+			}
+
+			//점프하고 있지 않을 시 Y값에 있도록
+			if (kittyPos.y >= KITTY_Y_BOTTOM) {
+				kittyPos.y = KITTY_Y_BOTTOM;
+				isBottom = true;
+			}
+			//점프 높이 제한
+			if (kittyPos.y <= KITTY_Y_BOTTOM - 450)
+			{
+				isJumping = false;
+			}
 			kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
-		}
-		else {
-			kittyPos.y += gravity;
-			kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
-		}
+			//장애물과 캐릭터 충돌
+			bool collision = false;
+			FloatRect characterBounds = kittySprite[index].getGlobalBounds();
+			for (int i = 0; i < obstacleCnt; i++) {
+				FloatRect obstacleBounds = obstacleSprite[i].getGlobalBounds();
 
-		//점프하고 있지 않을 시 Y값에 있도록
-		if (kittyPos.y >= KITTY_Y_BOTTOM) {
-			kittyPos.y = KITTY_Y_BOTTOM;
-			isBottom = true;
-		}
-		//점프 높이 제한
-		if (kittyPos.y <= KITTY_Y_BOTTOM - 400)
-		{
-			isJumping = false;
-		}
-		kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
-		
-		//장애물과 캐릭터 충돌
-		bool collision = false; 
-		FloatRect characterBounds = kittySprite[index].getGlobalBounds();
-		for (int i = 0; i < obstacleCnt; i++) {
-			FloatRect obstacleBounds = obstacleSprite[i].getGlobalBounds();
+				if (characterBounds.intersects(obstacleBounds)) {
+					collision = true;
+					break;
+				}
+			}
+			if (collision == true) {
+				window.close();
+			}
 
-			if (characterBounds.intersects(obstacleBounds)) {
-				collision= true;
-				break;
+			//장애물 움직임
+			for (int i = 0; i < obstacleCnt; i++) {
+				if (obstaclePos[i].x <= 0)
+				{
+					obstaclePos[i].x = WIDTH;
+				}
+				else
+				{
+					obstaclePos[i].x -= 3 - i;
+				}
+				obstacleSprite[i].setPosition(obstaclePos[i].x, obstaclePos[i].y);
+			}
+
+			// 구름 움직임
+			for (int i = 0; i < cloudCnt; i++) {
+				if (cloudPos[i].x <= -110)
+				{
+					cloudPos[i].x = WIDTH + 10;
+				}
+				else
+				{
+					cloudPos[i].x -= 2 + i;
+				}
+				cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
 			}
 		}
-		if (collision == true) {
-			window.close();
-		}
-
-		//장애물 움직임
-		for (int i = 0; i < obstacleCnt; i++) {
-			if (obstaclePos[i].x <= 0)
-			{
-				obstaclePos[i].x = WIDTH;
-			}
-			else
-			{
-				obstaclePos[i].x -=3-i;
-			}
-			obstacleSprite[i].setPosition(obstaclePos[i].x, obstaclePos[i].y);
-		}
-
-		// 구름 움직임
-		for (int i = 0; i < cloudCnt; i++) {
-			if (cloudPos[i].x <= -110)
-			{
-				cloudPos[i].x = WIDTH + 10;
-			}
-			else
-			{
-				cloudPos[i].x -= 2 + i;
-			}
-			cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
-		}
-
 		//캐릭터 다리움직임
 		frame += frameSpeed;
 		if (frame > changeCharacter) {
