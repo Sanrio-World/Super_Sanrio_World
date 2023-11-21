@@ -1,7 +1,7 @@
-#include "game.h"
+#include "gamePage.h"
 
-int main() {
-	Game game;
-	game.run();
-	return 0;
+int main(void)
+{
+    gamePage gameP;
+    gameP.run();
 }
