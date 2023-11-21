@@ -67,7 +67,7 @@ int main(void)
     float frame = 0.0f;
     float frameSpeed = 0.6f;
 
-    float gravity = 11;
+    float gravity = 14;
     bool isJumping = false;
     bool isBottom = true;
 
@@ -102,8 +102,8 @@ int main(void)
     obstacle[1].loadFromFile("resources/obstacle2.png");
 
     float obstacleSpeed[2];
-    obstacleSpeed[0] = rand() % 5 + 3;
-    obstacleSpeed[1] = rand() % 5 + 3;
+    obstacleSpeed[0] = rand() % 6 + 4;
+    obstacleSpeed[1] = rand() % 6 + 4;
 
     for (int i = 0; i < obstacleCnt; i++) {
         int obstaclePosition = rand() % 880 + 700;
@@ -220,7 +220,7 @@ int main(void)
                         currentP = StartP;
                         cout << "클릭" << endl;
                         score = 0;
-                        gravity = 10.2;
+                        gravity = 14;
                     }
                 }
             }
@@ -240,13 +240,13 @@ int main(void)
                 if (score >= 30) {
                     for (int i = 0; i < obstacleCnt; i++) {
                         obstacleSpeed[i] += 0.2;
-                        gravity = 10.6;
+                        gravity = 14;
                     }
                 }
                 if (score >= 90) {
                     for (int i = 0; i < obstacleCnt; i++) {
                         obstacleSpeed[i] += 0.2;
-                        gravity = 10.6;
+                        gravity = 14;
                     }
                 }
                 if (score >= 200) {
@@ -277,7 +277,7 @@ int main(void)
                 kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
             }
             else {
-                kittyPos.y += gravity;
+                kittyPos.y += gravity - 3;
                 kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
             }
@@ -288,7 +288,7 @@ int main(void)
                 isBottom = true;
             }
             //점프 높이 제한
-            if (kittyPos.y <= KITTY_Y_BOTTOM - 270)
+            if (kittyPos.y <= KITTY_Y_BOTTOM - 250)
             {
                 isJumping = false;
             }
@@ -339,6 +339,9 @@ int main(void)
             scoreResultText.setString(to_string(score));
 
             if (score > maxScore) maxScore = score;
+
+            obstacleSpeed[0] = rand() % 5 + 3;
+            obstacleSpeed[1] = rand() % 5 + 3;
 
             window.clear();
             window.draw(endPage_Sprite);
