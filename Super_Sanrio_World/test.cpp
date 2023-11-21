@@ -48,7 +48,7 @@ private:
     Sprite sprite;
 };
 
-int main1(void)
+int main(void)
 {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
@@ -132,17 +132,17 @@ int main1(void)
         cloudSprite[i].setTexture(cloud[i]);
     }
 
-    //startPage.cpp
-    /*Texture startPage;
+   
+    Texture startPage;
     startPage.loadFromFile("resources/startpage.png");
     Sprite startPage_Sprite(startPage);
-    startPage_Sprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));*/
+    startPage_Sprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
     //endPage.cpp
-    /*Texture endPage;
+    Texture endPage;
     endPage.loadFromFile("resources/endpage.png");
     Sprite endPage_Sprite(endPage);
-    endPage_Sprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));*/
+    endPage_Sprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
     Clock clock;
     float seconds = 0.0f;
@@ -230,7 +230,7 @@ int main1(void)
         if (currentP == StartP) {
             window.clear();
             // 시작화면에서 게임화면으로 넘어가게
-            //window.draw(startPage_Sprite);
+            window.draw(startPage_Sprite);
         }
         if (currentP == GameP) {
             //점수
@@ -345,7 +345,7 @@ int main1(void)
             obstacleSpeed[1] = rand() % 5 + 3;
 
             window.clear();
-            //window.draw(endPage_Sprite);
+            window.draw(endPage_Sprite);
             window.draw(scoreResultText);
             window.draw(reStartBtn_Sprite);
 

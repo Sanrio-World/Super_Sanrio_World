@@ -59,7 +59,7 @@ void gamePage::run() {
 
     // ¹è°æ À½¾Ç
     Music music;
-    if (!music.openFromFile("resources/sanrio_world_bgm.ogg"))
+    if (!music.openFromFile("resources/sanrio_world_bgm.ogg")) 
     music.play();
 
 
