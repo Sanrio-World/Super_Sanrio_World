@@ -173,6 +173,9 @@
     <ClInclude Include="character.h" />
     <ClInclude Include="game.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\sanrio_world_bgm.ogg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

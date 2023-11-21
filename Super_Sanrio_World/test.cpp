@@ -1,4 +1,5 @@
 #include<SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <windows.h>
 #include <iostream>
 #include <cstdlib>
@@ -47,18 +48,18 @@ private:
     Sprite sprite;
 };
 
-// 버튼 클릭 함수
-/*void clickBtn() {
-    if (sprite_.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-        if (Mouse::isButtonPressed(Mouse::Left)) {}
-    }
-}*/
-
 int main(void)
 {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
+    // 배경 음악
+    Music music;
+    if (!music.openFromFile("resources/sanrio_world_bgm.ogg"))
+        return -1; // error
+    music.play();
+
+    // 최고 기록
     int maxScore = 0;
 
     const int changeCharacter = 5;
