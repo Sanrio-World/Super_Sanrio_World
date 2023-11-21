@@ -23,6 +23,30 @@ enum CurrentP {
     EndP
 };
 
+class Button {
+public:
+    Button(const std::string& texturePath, Vector2f position) {
+        /*if (!texture.loadFromFile(texturePath)) {
+            cout <<
+        }*/
+
+        sprite.setTexture(texture);
+        sprite.setPosition(position);
+    }
+
+    bool isClicked(Vector2f mousePos) const {
+        return sprite.getGlobalBounds().contains(mousePos);
+    }
+
+    void draw(RenderWindow& window) const {
+        window.draw(sprite);
+    }
+
+private:
+    Texture texture;
+    Sprite sprite;
+};
+
 // 버튼 클릭 함수
 /*void clickBtn() {
     if (sprite_.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
@@ -35,12 +59,14 @@ int main(void)
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
+    int maxScore = 0;
+
     const int changeCharacter = 5;
     int index = 0;
     float frame = 0.0f;
     float frameSpeed = 0.6f;
 
-    float gravity = 10.2;
+    float gravity = 11;
     bool isJumping = false;
     bool isBottom = true;
 
@@ -127,23 +153,31 @@ int main(void)
         return -1;
     }
 
+    Text maxScoreText;
+    maxScoreText.setFont(font);
+    maxScoreText.setCharacterSize(53);
+    maxScoreText.setFillColor(Color::Magenta);
+    maxScoreText.setPosition(740, 5);
+
     Text scoreText;
     scoreText.setFont(font);
-    scoreText.setCharacterSize(30);
+    scoreText.setCharacterSize(33);
     scoreText.setFillColor(Color::White);
-    scoreText.setPosition(0, 0);
+    scoreText.setPosition(10, 5);
 
     Text scoreResultText;
     scoreResultText.setFont(font);
     scoreResultText.setCharacterSize(100);
-    scoreResultText.setFillColor(Color::Black);
+    scoreResultText.setFillColor(Color::Magenta);
     scoreResultText.setPosition(340, 165);
 
     // 게임 재시작 버튼
-    Texture reStartBtn;
-    reStartBtn.loadFromFile("resources/restart_btn.png");
-    Sprite reStartBtn_Sprite(reStartBtn);
+    Texture restartBtn;
+    restartBtn.loadFromFile("resources/restart_btn.png");
+    Sprite reStartBtn_Sprite(restartBtn);
     reStartBtn_Sprite.setPosition(550, 350);
+
+    //Button restartBtn("resources/restart_btn.png", Vector2f(550, 350));
 
 
     while (window.isOpen())
@@ -171,6 +205,21 @@ int main(void)
                     if (isBottom == true && isJumping == false) {
                         isJumping = true;
                         isBottom = false;
+                    }
+                }
+            }
+
+            if (e.type == Event::MouseButtonPressed) {
+                if (e.mouseButton.button == Mouse::Left) {
+                    Vector2i mousePos = Mouse::getPosition(window);
+                    Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+
+                    if (reStartBtn_Sprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        
+                        currentP = StartP;
+                        cout << "클릭" << endl;
+                        score = 0;
+                        gravity = 10.2;
                     }
                 }
             }
@@ -206,12 +255,14 @@ int main(void)
                     }
                 }
             }
-            scoreText.setString("Score: " + to_string(score));
+            scoreText.setString(to_string(score));
+            maxScoreText.setString(to_string(maxScore));
 
             window.clear();
             window.draw(mapSprite);
             window.draw(kittySprite[index]);
             window.draw(scoreText);
+            window.draw(maxScoreText);
             for (int i = 0; i < cloudCnt; i++) {
                 window.draw(cloudSprite[i]);
             }
@@ -236,7 +287,7 @@ int main(void)
                 isBottom = true;
             }
             //점프 높이 제한
-            if (kittyPos.y <= KITTY_Y_BOTTOM - 300)
+            if (kittyPos.y <= KITTY_Y_BOTTOM - 270)
             {
                 isJumping = false;
             }
@@ -250,6 +301,8 @@ int main(void)
 
                 if (characterBounds.intersects(obstacleBounds)) {
                     currentP = EndP;
+                    obstaclePos[0].x = WIDTH;
+                    obstaclePos[1].x = WIDTH;
                     break;
                 }
             }
@@ -284,11 +337,7 @@ int main(void)
         if (currentP == EndP) {
             scoreResultText.setString(to_string(score));
 
-            Vector2i mousePos = Mouse::getPosition(window);
-
-            if(reStartBtn_Sprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                if (Mouse::isButtonPressed(Mouse::Left)) {}
-            }
+            if (score > maxScore) maxScore = score;
 
             window.clear();
             window.draw(endPage_Sprite);
