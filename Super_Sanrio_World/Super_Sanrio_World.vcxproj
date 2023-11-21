@@ -161,7 +161,6 @@
     </ClCompile>
     <ClCompile Include="endPage.cpp" />
     <ClCompile Include="gamePage.cpp" />
-    <ClCompile Include="firstmain.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="startPage.cpp" />
     <ClCompile Include="test.cpp">

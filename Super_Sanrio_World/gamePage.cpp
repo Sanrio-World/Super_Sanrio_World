@@ -32,9 +32,6 @@ gamePage::gamePage() {
 class Button {
 public:
     Button(const std::string& texturePath, Vector2f position) {
-        /*if (!texture.loadFromFile(texturePath)) {
-            cout <<
-        }*/
 
         sprite.setTexture(texture);
         sprite.setPosition(position);
@@ -172,8 +169,6 @@ void gamePage::run() {
     restartBtn.loadFromFile("resources/restart_btn.png");
     Sprite reStartBtn_Sprite(restartBtn);
     reStartBtn_Sprite.setPosition(550, 350);
-
-    //Button restartBtn("resources/restart_btn.png", Vector2f(550, 350));
 
     while (window.isOpen())
     {
