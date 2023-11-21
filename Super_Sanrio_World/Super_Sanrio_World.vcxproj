@@ -159,19 +159,20 @@
     <ClCompile Include="character.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="endPage.cpp" />
+    <ClCompile Include="gamePage.cpp" />
+    <ClCompile Include="firstmain.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="startPage.cpp" />
     <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
-    <ClInclude Include="game.h" />
+    <ClInclude Include="endPage.h" />
+    <ClInclude Include="gamePage.h" />
+    <ClInclude Include="startPage.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sanrio_world_bgm.ogg" />

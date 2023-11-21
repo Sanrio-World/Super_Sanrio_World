@@ -4,14 +4,15 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include "gamePage.h"
+#include "startPage.h"
+#include "endPage.h"
 
-// #include "start_page.h"
+using namespace sf;
+using namespace std;
 
 #define WIDTH 840
 #define HEIGHT 480
-
-using namespace std;
-using namespace sf;
 
 struct Position {
     int x;
@@ -24,6 +25,10 @@ enum CurrentP {
     EndP
 };
 
+
+gamePage::gamePage() {
+   
+}
 class Button {
 public:
     Button(const std::string& texturePath, Vector2f position) {
@@ -48,16 +53,18 @@ private:
     Sprite sprite;
 };
 
-int main1(void)
-{
+void gamePage::run() {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
+
+    startPage startP("resources/startpage.png");
+    endPage endP("resources/endpage.png");
 
     // 배경 음악
     Music music;
     if (!music.openFromFile("resources/sanrio_world_bgm.ogg"))
-        return -1; // error
     music.play();
+
 
     // 최고 기록
     int maxScore = 0;
@@ -132,18 +139,6 @@ int main1(void)
         cloudSprite[i].setTexture(cloud[i]);
     }
 
-    //startPage.cpp
-    /*Texture startPage;
-    startPage.loadFromFile("resources/startpage.png");
-    Sprite startPage_Sprite(startPage);
-    startPage_Sprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));*/
-
-    //endPage.cpp
-    /*Texture endPage;
-    endPage.loadFromFile("resources/endpage.png");
-    Sprite endPage_Sprite(endPage);
-    endPage_Sprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));*/
-
     Clock clock;
     float seconds = 0.0f;
     int score = 0;
@@ -152,7 +147,6 @@ int main1(void)
     if (!font.loadFromFile("C:\\Windows\\Fonts\\H2GSRB.ttf"))
     {
         printf("폰트 불러오기 실패\n");
-        return -1;
     }
 
     Text maxScoreText;
@@ -180,7 +174,6 @@ int main1(void)
     reStartBtn_Sprite.setPosition(550, 350);
 
     //Button restartBtn("resources/restart_btn.png", Vector2f(550, 350));
-
 
     while (window.isOpen())
     {
@@ -217,7 +210,7 @@ int main1(void)
                     Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
 
                     if (reStartBtn_Sprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        
+
                         currentP = StartP;
                         cout << "클릭" << endl;
                         score = 0;
@@ -228,9 +221,8 @@ int main1(void)
         }
 
         if (currentP == StartP) {
-            window.clear();
             // 시작화면에서 게임화면으로 넘어가게
-            //window.draw(startPage_Sprite);
+            startP.draw(window);
         }
         if (currentP == GameP) {
             //점수
@@ -345,12 +337,11 @@ int main1(void)
             obstacleSpeed[1] = rand() % 5 + 3;
 
             window.clear();
-            //window.draw(endPage_Sprite);
+            endP.draw(window);
             window.draw(scoreResultText);
             window.draw(reStartBtn_Sprite);
 
         }
-
         //캐릭터 다리움직임
         frame += frameSpeed;
         if (frame > changeCharacter && kittyPos.y == KITTY_Y_BOTTOM) {
@@ -358,10 +349,9 @@ int main1(void)
             index++;
             if (index >= 2) index = 0;
         }
-
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
         window.display();
-    }
-    return 0;
+    };
 }
+
