@@ -45,15 +45,24 @@
     <Image Include="..\..\..\..\..\obstacle1.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\..\..\..\..\obstacle2.png">
+    <Image Include="resources\endpage.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="resources\endpage.png">
+    <Image Include="resources\obstacle2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="resources\character1.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="resources\character2.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="resources\restart_btn.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="jisu_test.cpp">
+    <ClCompile Include="test.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">

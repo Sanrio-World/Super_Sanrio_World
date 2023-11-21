@@ -1,6 +1,8 @@
 #include<SFML/Graphics.hpp>
 #include <windows.h>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 // #include "start_page.h"
 
@@ -21,6 +23,13 @@ enum CurrentP {
     EndP
 };
 
+// 버튼 클릭 함수
+/*void clickBtn() {
+    if (sprite_.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+        if (Mouse::isButtonPressed(Mouse::Left)) {}
+    }
+}*/
+
 int main(void)
 {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
@@ -29,13 +38,15 @@ int main(void)
     const int changeCharacter = 5;
     int index = 0;
     float frame = 0.0f;
-    float frameSpeed = 0.2f;
+    float frameSpeed = 0.6f;
 
-    const int gravity = 10;
+    float gravity = 10.2;
     bool isJumping = false;
     bool isBottom = true;
 
     CurrentP currentP = StartP;
+
+    srand(time(nullptr)); // 랜덤 시드 초기화
 
     Texture map;
     map.loadFromFile("resources/sanrio_map.png");
@@ -63,11 +74,17 @@ int main(void)
     obstacle[0].loadFromFile("resources/obstacle1.png");
     obstacle[1].loadFromFile("resources/obstacle2.png");
 
+    float obstacleSpeed[2];
+    obstacleSpeed[0] = rand() % 5 + 3;
+    obstacleSpeed[1] = rand() % 5 + 3;
+
     for (int i = 0; i < obstacleCnt; i++) {
-        obstaclePos[i].x = 900;
+        int obstaclePosition = rand() % 880 + 700;
+        obstaclePos[i].x = obstaclePosition;
         obstaclePos[i].y = 350;
         obstacleSprite[i].setTexture(obstacle[i]);
     }
+
 
     const int cloudCnt = 5;
     Texture cloud[cloudCnt];
@@ -82,7 +99,8 @@ int main(void)
 
 
     for (int i = 0; i < cloudCnt; i++) {
-        cloudPos[i].x = 10;
+        int randomOffset = rand() % 800;
+        cloudPos[i].x = randomOffset;
         cloudPos[i].y = 60 + (i * 15);
         cloudSprite[i].setTexture(cloud[i]);
     }
@@ -120,6 +138,13 @@ int main(void)
     scoreResultText.setCharacterSize(100);
     scoreResultText.setFillColor(Color::Black);
     scoreResultText.setPosition(340, 165);
+
+    // 게임 재시작 버튼
+    Texture reStartBtn;
+    reStartBtn.loadFromFile("resources/restart_btn.png");
+    Sprite reStartBtn_Sprite(reStartBtn);
+    reStartBtn_Sprite.setPosition(550, 350);
+
 
     while (window.isOpen())
     {
@@ -162,6 +187,24 @@ int main(void)
             if (seconds >= 0.3f) {
                 score++;
                 seconds = 0.0f;
+                if (score >= 30) {
+                    for (int i = 0; i < obstacleCnt; i++) {
+                        obstacleSpeed[i] += 0.2;
+                        gravity = 10.6;
+                    }
+                }
+                if (score >= 90) {
+                    for (int i = 0; i < obstacleCnt; i++) {
+                        obstacleSpeed[i] += 0.2;
+                        gravity = 10.6;
+                    }
+                }
+                if (score >= 200) {
+                    for (int i = 0; i < obstacleCnt; i++) {
+                        obstacleSpeed[i] += 0.2;
+                        gravity++;
+                    }
+                }
             }
             scoreText.setString("Score: " + to_string(score));
 
@@ -193,7 +236,7 @@ int main(void)
                 isBottom = true;
             }
             //점프 높이 제한
-            if (kittyPos.y <= KITTY_Y_BOTTOM - 450)
+            if (kittyPos.y <= KITTY_Y_BOTTOM - 300)
             {
                 isJumping = false;
             }
@@ -211,16 +254,16 @@ int main(void)
                 }
             }
 
-            
             //장애물 움직임
             for (int i = 0; i < obstacleCnt; i++) {
-                if (obstaclePos[i].x <= 0)
+                if (obstaclePos[i].x <= -30)
                 {
+                    obstacleSpeed[i] = rand() % 7 + (obstacleSpeed[i] - 3);
                     obstaclePos[i].x = WIDTH;
                 }
                 else
                 {
-                    obstaclePos[i].x -= 3 - i;
+                    obstaclePos[i].x -= obstacleSpeed[i];
                 }
                 obstacleSprite[i].setPosition(obstaclePos[i].x, obstaclePos[i].y);
             }
@@ -233,24 +276,30 @@ int main(void)
                 }
                 else
                 {
-                    cloudPos[i].x -= 2 + i;
+                    cloudPos[i].x -= 3;
                 }
                 cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
             }
         }
         if (currentP == EndP) {
             scoreResultText.setString(to_string(score));
-            //scoreResultText.setString(to_string(100));
+
+            Vector2i mousePos = Mouse::getPosition(window);
+
+            if(reStartBtn_Sprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                if (Mouse::isButtonPressed(Mouse::Left)) {}
+            }
 
             window.clear();
             window.draw(endPage_Sprite);
             window.draw(scoreResultText);
+            window.draw(reStartBtn_Sprite);
 
         }
 
         //캐릭터 다리움직임
         frame += frameSpeed;
-        if (frame > changeCharacter) {
+        if (frame > changeCharacter && kittyPos.y == KITTY_Y_BOTTOM) {
             frame -= changeCharacter;
             index++;
             if (index >= 2) index = 0;

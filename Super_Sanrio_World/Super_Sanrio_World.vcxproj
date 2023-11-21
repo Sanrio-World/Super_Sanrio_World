@@ -143,12 +143,15 @@
     <Image Include="..\..\..\..\..\diecharacter.png" />
     <Image Include="..\..\..\..\..\marioMap.bmp" />
     <Image Include="..\..\..\..\..\obstacle1.png" />
-    <Image Include="..\..\..\..\..\obstacle2.png" />
     <Image Include="..\..\..\..\..\tupli.png" />
+    <Image Include="resources\character1.png" />
+    <Image Include="resources\character2.png" />
     <Image Include="resources\cloud1.png" />
     <Image Include="resources\cloud2.png" />
     <Image Include="resources\cloud3.png" />
     <Image Include="resources\endpage.png" />
+    <Image Include="resources\obstacle2.png" />
+    <Image Include="resources\restart_btn.png" />
     <Image Include="resources\sanrioMap.bmp" />
     <Image Include="resources\startpage.png" />
   </ItemGroup>
@@ -159,7 +162,7 @@
     <ClCompile Include="game.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="jisu_test.cpp">
+    <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="main.cpp">
