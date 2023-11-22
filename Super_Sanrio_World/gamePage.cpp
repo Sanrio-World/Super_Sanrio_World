@@ -28,6 +28,8 @@ enum CurrentP {
 };
 
 void gamePage::run() {
+    srand(time(nullptr)); // 랜덤 시드 초기화
+
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
@@ -50,8 +52,6 @@ void gamePage::run() {
 
     CurrentP currentP = StartP;
 
-    srand(time(nullptr)); // 랜덤 시드 초기화
-
     //배경
     Texture map;
     map.loadFromFile("resources/sanrio_map.png");
@@ -66,22 +66,25 @@ void gamePage::run() {
     kittySprite[0] = Sprite(kitty1);
     kittySprite[1] = Sprite(kitty2);
 
-
     //캐릭터 위치 - 효진
     Position kittyPos;
     kittyPos.x = 70;
     kittyPos.y = KITTY_Y_BOTTOM;
 
-    const int obstacleCnt = 2;
+    // 캐릭터 초기 위치 설정
+    kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+
+    // 장애물
+    const int obstacleCnt = 3;
     Texture obstacle[obstacleCnt];
     Position obstaclePos[obstacleCnt];
     Sprite obstacleSprite[obstacleCnt];
     obstacle[0].loadFromFile("resources/obstacle1.png");
     obstacle[1].loadFromFile("resources/obstacle2.png");
+    obstacle[2].loadFromFile("resources/obstacle4.png");
 
-    //float obstacleSpeed = rand() % 4 + 3;
     float obstacleSpeed = 7;
-    //int distance = rand() % 330 + 310;
+
     int obstaclePosition = rand() % 920 + 780;
 
     for (int i = 0; i < obstacleCnt; i++) {
@@ -89,7 +92,6 @@ void gamePage::run() {
         obstaclePos[i].y = 350;
         obstacleSprite[i].setTexture(obstacle[i]);
     }
-
 
     // 구름 - 지수
     Cloud cloud;
@@ -226,7 +228,6 @@ void gamePage::run() {
             if (kittyPos.y <= KITTY_Y_BOTTOM - 210)
             {
                 isJumping = false;
-                score += 3;
             }
             kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
@@ -279,7 +280,9 @@ void gamePage::run() {
 
         //캐릭터 다리움직임 - 효진
         frame += frameSpeed;
-        if (frame > changeCharacter) {
+        // 키티가 점프하지 않을 때만 달리는 모션
+        // 지지직거림 해결
+        if (frame > changeCharacter && kittyPos.y == KITTY_Y_BOTTOM) {
             frame -= changeCharacter;
             index++;
             if (index >= 2) index = 0;
