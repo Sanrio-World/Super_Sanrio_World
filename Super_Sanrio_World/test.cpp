@@ -48,9 +48,8 @@ private:
     Sprite sprite;
 };
 
-void main() {
-    srand(time(nullptr)); // 랜덤 시드 초기화
-
+int main(void)
+{
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 

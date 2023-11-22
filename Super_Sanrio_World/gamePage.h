@@ -3,7 +3,6 @@
 
 class gamePage {
 public:
-    gamePage();
     void run();
 
 };
