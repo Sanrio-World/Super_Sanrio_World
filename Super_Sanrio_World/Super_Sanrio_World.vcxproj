@@ -151,20 +151,30 @@
     <Image Include="resources\cloud3.png" />
     <Image Include="resources\endpage.png" />
     <Image Include="resources\obstacle2.png" />
+    <Image Include="resources\obstacle3.png" />
+    <Image Include="resources\obstacle4.png" />
     <Image Include="resources\restart_btn.png" />
     <Image Include="resources\sanrioMap.bmp" />
     <Image Include="resources\startpage.png" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="character.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="endPage.cpp" />
-    <ClCompile Include="gamePage.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="startPage.cpp" />
-    <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="endPage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="gamePage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="startPage.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

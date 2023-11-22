@@ -5,6 +5,8 @@
 
 using namespace sf;
 
+
+
 int main(void)
 {
     Music music;

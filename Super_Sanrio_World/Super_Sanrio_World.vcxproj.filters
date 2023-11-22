@@ -60,6 +60,12 @@
     <Image Include="resources\restart_btn.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="resources\obstacle3.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="resources\obstacle4.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test.cpp">

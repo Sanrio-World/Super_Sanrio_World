@@ -1,48 +1,13 @@
 #include "character.h"
 
-Character::Character() {
-    index = 0;
-    changeCharacter = 5;
-    frame = 0.0f;
-    frameSpeed = 0.2f;
-    gravity = 10;
-    isJumping = false;
-    isBottom = true;
-    kittyPos_x = 70;
-    kittyPos_y = 350;
-
-    kitty1.loadFromFile("resources/character1.png");
-    kitty2.loadFromFile("resources/character2.png");
+character::character(const std::string characterPath1, const std::string characterPath2) {
+    kitty1.loadFromFile(characterPath1);
+    kitty2.loadFromFile(characterPath2);
     characterSprite[0].setTexture(kitty1);
     characterSprite[1].setTexture(kitty2);
 }
 
-void Character::update() {
-    frame += frameSpeed;
-    if (frame > 5) {
-        frame -= 5;
-        index++;
-        if (index >= 2) index = 0;
-    }
-
-    if (isJumping) {
-        kittyPos_y -= gravity;
-        characterSprite[index].setPosition(kittyPos_x, kittyPos_y);
-    }
-    else {
-        kittyPos_y += gravity;
-        characterSprite[index].setPosition(kittyPos_x, kittyPos_y);
-    }
-
-    if (kittyPos_y >= 350) {
-        kittyPos_y = 350;
-        isBottom = true;
-    }
-    if (kittyPos_y <= 350 - 450) {
-        isJumping = false;
-    }
-}
-void Character::jump() {
+void character::jump(int kittyPos_x,int kittyPos_y,bool isBottom,bool isJumping,int gravity,int index) {
     if (isBottom == true && isJumping == false) {
         isJumping = true;
         isBottom = false;
@@ -70,7 +35,7 @@ void Character::jump() {
     }
     characterSprite[index].setPosition(kittyPos_x, kittyPos_y);
 }
-void Character::moving() {
+void character::moving(float frame,float frameSpeed,int index,int changeCharacter) {
     //캐릭터 다리움직임
     frame += frameSpeed;
     if (frame > changeCharacter) {
@@ -79,6 +44,8 @@ void Character::moving() {
         if (index >= 2) index = 0;
     }
 }
-void Character::draw(sf::RenderWindow window) {
+void character::drawCharacter(sf::RenderWindow& window) const {
+    window.clear();
     window.draw(characterSprite[index]);
 }
+
