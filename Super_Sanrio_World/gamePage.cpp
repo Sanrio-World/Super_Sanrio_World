@@ -13,6 +13,7 @@ using namespace std;
 
 #define WIDTH 840
 #define HEIGHT 480
+#define KITTY_Y_BOTTOM 350
 
 struct Position {
     int x;
@@ -24,8 +25,44 @@ enum CurrentP {
     GameP,
     EndP
 };
+static int index = 0;
 
+class Game {
+public :
+    Game() {
 
+    }
+    Game(const std::string& characterPath1, const std::string& characterPath2) {
+        kitty1.loadFromFile(characterPath1);
+        kitty2.loadFromFile(characterPath2);
+        kittySprite[0] = Sprite(kitty1);
+        kittySprite[1] = Sprite(kitty2);
+    }
+    void move(float& frame,float frameSpeed, int Kitty_y,int changeCharacter) {
+        frame += frameSpeed;
+        if (frame > changeCharacter && Kitty_y == KITTY_Y_BOTTOM) {
+            frame -= changeCharacter;
+            index++;
+            if (index >= 2) index = 0;
+        }
+    }
+    void setPosition(int Kitty_x,int Kitty_y) {
+        kittySprite[index].setPosition(Kitty_x, Kitty_y);
+    }
+    void draw(RenderWindow& window) const {
+        window.draw(kittySprite[index]);
+    }
+private:
+    Texture kitty1;
+    Texture kitty2;
+    Sprite kittySprite[2];
+    int Kitty_x;
+    int Kitty_y;
+    int changeCharacter;
+    float frame;
+    float frameSpeed;
+
+};
 gamePage::gamePage() {
    
 }
@@ -56,14 +93,10 @@ void gamePage::run() {
 
     startPage startP("resources/startpage.png");
     endPage endP("resources/endpage.png");
+    Game game("resources/character1.png", "resources/character2.png");
 
-    // 배경 음악
-    Music music;
-    if (!music.openFromFile("resources/sanrio_world_bgm.ogg")) 
-    music.play();
-
-
-    // 최고 기록
+   
+     // 최고 기록
     int maxScore = 0;
 
     const int changeCharacter = 5;
@@ -83,16 +116,6 @@ void gamePage::run() {
     map.loadFromFile("resources/sanrio_map.png");
     Sprite mapSprite(map);
     mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
-
-    Texture kitty1;
-    kitty1.loadFromFile("resources/character1.png");
-    Texture kitty2;
-    kitty2.loadFromFile("resources/character2.png");
-    Sprite kittySprite[2];
-    kittySprite[0] = Sprite(kitty1);
-    kittySprite[1] = Sprite(kitty2);
-
-    const int KITTY_Y_BOTTOM = HEIGHT - 150;
 
     Position kittyPos;
     kittyPos.x = 70;
@@ -251,7 +274,9 @@ void gamePage::run() {
             // gampPage draws
             window.clear();
             window.draw(mapSprite);
-            window.draw(kittySprite[index]);
+           
+            game.draw(window);
+            //window.draw(kittySprite[index]);
             window.draw(scoreText);
             window.draw(maxScoreText);
             for (int i = 0; i < cloudCnt; i++) {
@@ -265,11 +290,11 @@ void gamePage::run() {
             if (isJumping == true)
             {
                 kittyPos.y -= gravity;
-                kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+                game.setPosition(kittyPos.x, kittyPos.y);
             }
             else {
                 kittyPos.y += gravity - 2;
-                kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+                game.setPosition(kittyPos.x, kittyPos.y);
             }
 
             //점프하고 있지 않을 시 Y값에 있도록
@@ -284,10 +309,10 @@ void gamePage::run() {
                 isJumping = false;
                 score += 3;
             }
-            kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+            game.setPosition(kittyPos.x, kittyPos.y);
 
             //장애물과 캐릭터 충돌
-            FloatRect characterBounds = kittySprite[index].getGlobalBounds();
+           /* FloatRect characterBounds = kittySprite[index].getGlobalBounds();
             for (int i = 0; i < obstacleCnt; i++) {
                 FloatRect obstacleBounds = obstacleSprite[i].getGlobalBounds();
 
@@ -297,7 +322,7 @@ void gamePage::run() {
                         obstaclePos[j].x = WIDTH;
                     break;
                 }
-            }
+            }*/
 
             int distance = rand() % 330 + 310;
 
@@ -342,12 +367,7 @@ void gamePage::run() {
 
         }
         //캐릭터 다리움직임
-        frame += frameSpeed;
-        if (frame > changeCharacter && kittyPos.y == KITTY_Y_BOTTOM) {
-            frame -= changeCharacter;
-            index++;
-            if (index >= 2) index = 0;
-        }
+        game.move(frame, frameSpeed,kittyPos.y, changeCharacter);
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
         window.display();

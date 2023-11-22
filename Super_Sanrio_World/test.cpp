@@ -48,7 +48,7 @@ private:
     Sprite sprite;
 };
 
-int main(void)
+int main1(void)
 {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
