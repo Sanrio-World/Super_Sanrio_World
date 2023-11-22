@@ -5,31 +5,33 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "gamePage.h"
-#include "startPage.h"
+#include "cloud.h"
 #include "endPage.h"
+#include "gamePage.h"
 #include "obstacle.h"
+#include "obstacle.h"
+#include "startPage.h"
 #include "character.h"
 #include "position.h"
-#include "cloud.h"
+#include "scoreText.h"
 
 using namespace sf;
 using namespace std;
 
 #define WIDTH 840
 #define HEIGHT 480
-#define KITTY_Y_BOTTOM 320
+#define KITTY_Y_BOTTOM 340
 
 enum CurrentP {
     StartP,
     GameP,
     EndP
 };
-
 void gamePage::run() {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
+    
     startPage startP("resources/startpage.png");
     endPage endP("resources/endpage.png");
     Character character("resources/character1.png", "resources/character2.png");
@@ -76,23 +78,10 @@ void gamePage::run() {
         printf("폰트 불러오기 실패\n");
     }
 
-    Text maxScoreText;
-    maxScoreText.setFont(font);
-    maxScoreText.setCharacterSize(53);
-    maxScoreText.setFillColor(Color::Magenta);
-    maxScoreText.setPosition(740, 5);
-
-    Text scoreText;
-    scoreText.setFont(font);
-    scoreText.setCharacterSize(33);
-    scoreText.setFillColor(Color::White);
-    scoreText.setPosition(10, 5);
-
-    Text scoreResultText;
-    scoreResultText.setFont(font);
-    scoreResultText.setCharacterSize(100);
-    scoreResultText.setFillColor(Color::Magenta);
-    scoreResultText.setPosition(340, 165);
+  
+    ScoreText maxscoreText(font, 53, 740, 5,Color::Magenta);
+    ScoreText scoreText(font,33,10,5,Color::White);
+    ScoreText scoreResultText(font, 100, 340, 165, Color::Magenta);
 
     // 게임 재시작 버튼
     Texture restartBtn;
@@ -172,16 +161,16 @@ void gamePage::run() {
             }
 
             // 현재 점수와 최고 기록 setting
-            scoreText.setString(to_string(score));
-            maxScoreText.setString(to_string(maxScore));
+            scoreText.setString(score);
+            maxscoreText.setString(maxScore);
 
             // gampPage draws
             window.clear();
             window.draw(mapSprite);
            
             character.draw(window);
-            window.draw(scoreText);
-            window.draw(maxScoreText);
+            scoreText.draw(window);
+            maxscoreText.draw(window);
             cloud.drawCloud(window);
             for (int i = 0; i < obs.getObstacleCnt(); i++) {
                 window.draw(obs.getSprites(i));
@@ -234,7 +223,7 @@ void gamePage::run() {
             cloud.moveCloud();
         }
         if (currentP == EndP) {
-            scoreResultText.setString(to_string(score));
+            scoreResultText.setString(score);
 
             if (score > maxScore) maxScore = score;
 
@@ -242,7 +231,7 @@ void gamePage::run() {
 
             window.clear();
             endP.draw(window);
-            window.draw(scoreResultText);
+            scoreResultText.draw(window);
             window.draw(reStartBtn_Sprite);
 
         }
