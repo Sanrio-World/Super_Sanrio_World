@@ -178,6 +178,7 @@
     <ClCompile Include="test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="scoreText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h" />
@@ -187,6 +188,7 @@
     <ClInclude Include="obstacle.h" />
     <ClInclude Include="position.h" />
     <ClInclude Include="startPage.h" />
+    <ClInclude Include="scoreText.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\sanrio_world_bgm.ogg" />
