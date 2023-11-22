@@ -27,11 +27,12 @@ enum CurrentP {
     GameP,
     EndP
 };
+
 void gamePage::run() {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
-    
+    //페이지 불러오기
     startPage startP("resources/startpage.png");
     endPage endP("resources/endpage.png");
     Character character("resources/character1.png", "resources/character2.png");
@@ -52,11 +53,13 @@ void gamePage::run() {
 
     srand(time(nullptr)); // 랜덤 시드 초기화
 
+    //배경
     Texture map;
     map.loadFromFile("resources/sanrio_map.png");
     Sprite mapSprite(map);
     mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
+    //캐릭터 위치 - 효진
     Position kittyPos;
     kittyPos.x = 70;
     kittyPos.y = KITTY_Y_BOTTOM;
@@ -67,7 +70,7 @@ void gamePage::run() {
     // 구름
     Cloud cloud;
 
-    // 점수 측정을 위한 Clock
+    // 점수 측정을 위한 시계
     Clock clock;
     float seconds = 0.0f;
     int score = 0;
@@ -78,7 +81,7 @@ void gamePage::run() {
         printf("폰트 불러오기 실패\n");
     }
 
-  
+    //텍스트(점수) 불러오기
     ScoreText maxscoreText(font, 53, 740, 5,Color::Magenta);
     ScoreText scoreText(font,33,10,5,Color::White);
     ScoreText scoreResultText(font, 100, 340, 165, Color::Magenta);
@@ -109,7 +112,7 @@ void gamePage::run() {
                     cout << "Switched to GameP." << endl;
                 }
 
-                // 게임화면에서 Up Key가 눌렸을 때
+                // 게임화면에서 Up Key가 눌렸을 때 - 효진
                 if (e.key.code == Keyboard::Up && currentP == GameP) {
                     if (isBottom == true && isJumping == false) {
                         isJumping = true;
@@ -139,8 +142,9 @@ void gamePage::run() {
             startP.draw(window);
         }
         if (currentP == GameP) {
-            //점수
+            //점수 - 효진
             seconds += clock.restart().asSeconds();
+            //0.3초에 1점씩 점수증가
             if (seconds >= 0.3f) {
                 score++;
                 seconds = 0.0f;
@@ -176,24 +180,24 @@ void gamePage::run() {
                 window.draw(obs.getSprites(i));
             }
 
-            // 캐릭터 점프 설정
+            // 캐릭터 점프 설정 - 효진
             if (isJumping == true)
             {
                 kittyPos.y -= gravity;
                 character.setPosition(kittyPos.x, kittyPos.y);
             }
             else {
-                kittyPos.y += gravity - 2;
+                kittyPos.y += gravity;
                 character.setPosition(kittyPos.x, kittyPos.y);
             }
 
-            //점프하고 있지 않을 시 Y값에 있도록
+            //점프하고 있지 않을 시 Y값에 있도록 - 효진
             if (kittyPos.y >= KITTY_Y_BOTTOM) {
                 kittyPos.y = KITTY_Y_BOTTOM;
                 isBottom = true;
             }
 
-            //점프 높이 제한
+            //점프 높이 제한(하늘위로 계속 올라가지 않도록) -효진
             if (kittyPos.y <= KITTY_Y_BOTTOM - 210)
             {
                 isJumping = false;
@@ -201,12 +205,12 @@ void gamePage::run() {
             }
             character.setPosition(kittyPos.x, kittyPos.y);
 
-            //장애물과 캐릭터 충돌
+            //장애물과 캐릭터 충돌 -효진
            FloatRect characterBounds = character.getKittySprite(index).getGlobalBounds();
            for (int i = 0; i < obs.getObstacleCnt(); i++) {
                FloatRect obstacleBounds = obs.getSprites(i).getGlobalBounds();
 
-               if (characterBounds.intersects(obstacleBounds)) {
+               if (characterBounds.intersects(obstacleBounds)==true) {
                    currentP = EndP;
                    for (int j = 0; j < obs.getObstacleCnt(); j++)
                        obs.setObstaclePosX(j, WIDTH);
@@ -216,7 +220,7 @@ void gamePage::run() {
 
             int distance = rand() % 330 + 310;
 
-            //장애물 움직임
+            //장애물 움직임 
             obs.moveObatacle();
 
             // 구름 움직임
@@ -235,7 +239,7 @@ void gamePage::run() {
             window.draw(reStartBtn_Sprite);
 
         }
-        //캐릭터 다리움직임
+        //캐릭터 다리움직임 - 효진
         character.move(frame, frameSpeed, kittyPos.y, changeCharacter);
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
