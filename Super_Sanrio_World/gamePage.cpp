@@ -9,9 +9,9 @@
 #include "endPage.h"
 #include "gamePage.h"
 #include "startPage.h"
-#include "character.h"
+//#include "character.h"
 #include "position.h"
-#include "obstacle.h"
+//#include "obstacle.h"
 #include "scoreText.h"
 
 using namespace sf;
@@ -19,7 +19,7 @@ using namespace std;
 
 #define WIDTH 840
 #define HEIGHT 480
-#define KITTY_Y_BOTTOM 310
+#define KITTY_Y_BOTTOM 315
 
 enum CurrentP {
     StartP,
@@ -34,17 +34,17 @@ void gamePage::run() {
     //페이지 불러오기
     startPage startP("resources/startpage.png");
     endPage endP("resources/endpage.png");
-    Character character("resources/character1.png", "resources/character2.png");
 
      // 최고 기록
     int maxScore = 0;
 
     const int changeCharacter = 5;
-    const int index = 0;
+    int index = 0;
     float frame = 0.0f;
     float frameSpeed = 0.6f;
 
-    float gravity = 15;
+
+    float gravity = 13;
     bool isJumping = false;
     bool isBottom = true;
 
@@ -58,13 +58,38 @@ void gamePage::run() {
     Sprite mapSprite(map);
     mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
 
+    Texture kitty1;
+    kitty1.loadFromFile("resources/character1.png");
+    Texture kitty2;
+    kitty2.loadFromFile("resources/character2.png");
+    Sprite kittySprite[2];
+    kittySprite[0] = Sprite(kitty1);
+    kittySprite[1] = Sprite(kitty2);
+
+
     //캐릭터 위치 - 효진
     Position kittyPos;
     kittyPos.x = 70;
     kittyPos.y = KITTY_Y_BOTTOM;
 
-    // 장애물
-    Obstacle obs;
+    const int obstacleCnt = 2;
+    Texture obstacle[obstacleCnt];
+    Position obstaclePos[obstacleCnt];
+    Sprite obstacleSprite[obstacleCnt];
+    obstacle[0].loadFromFile("resources/obstacle1.png");
+    obstacle[1].loadFromFile("resources/obstacle2.png");
+
+    //float obstacleSpeed = rand() % 4 + 3;
+    float obstacleSpeed = 7;
+    //int distance = rand() % 330 + 310;
+    int obstaclePosition = rand() % 920 + 780;
+
+    for (int i = 0; i < obstacleCnt; i++) {
+        obstaclePos[i].x = obstaclePosition + (i * 310);
+        obstaclePos[i].y = 350;
+        obstacleSprite[i].setTexture(obstacle[i]);
+    }
+
 
     // 구름 - 지수
     Cloud cloud;
@@ -129,7 +154,7 @@ void gamePage::run() {
                     if (reStartBtn_Sprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
                         currentP = StartP; // Start 페이지로 변경
                         score = 0;      // 점수 초기화
-                        gravity = 15;   // 점프할 때 내려오는 속도 초기화
+                        gravity = 13;   // 점프할 때 내려오는 속도 초기화
                     }
                 }
             }
@@ -150,14 +175,14 @@ void gamePage::run() {
 
                 // 시간 흐름에 따라 속도, 점프할 때 내려오는 속도 증가 - 지수
                 if (seconds >= 90) {
-                    for (int i = 0; i < obs.getObstacleCnt(); i++) {
-                        obs.sumSpeed(0.1);
+                    for (int i = 0; i < obstacleCnt; i++) {
+                        obstacleSpeed += 0.1;
                         gravity++;
                     }
                 }
                 if (seconds >= 200) {
-                    for (int i = 0; i < obs.getObstacleCnt(); i++) {
-                        obs.sumSpeed(0.2);
+                    for (int i = 0; i < obstacleCnt; i++) {
+                        obstacleSpeed += 0.2;
                         gravity++;
                     }
                 }
@@ -172,53 +197,68 @@ void gamePage::run() {
             // gampPage draws
             window.clear();
             window.draw(mapSprite);
-            character.draw(window);
+            window.draw(kittySprite[index]);
             scoreText.draw(window);
             maxscoreText.draw(window);
             cloud.drawCloud(window);
-            obs.drawObstacle(window);
+            for (int i = 0; i < obstacleCnt; i++) {
+                window.draw(obstacleSprite[i]);
+            }
 
-            // 캐릭터 점프 설정 - 효진
+            // 캐릭터 점프 설정
             if (isJumping == true)
             {
                 kittyPos.y -= gravity;
-                character.setPosition(kittyPos.x, kittyPos.y);
+                kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
             }
             else {
-                kittyPos.y += gravity;
-                character.setPosition(kittyPos.x, kittyPos.y);
+                kittyPos.y += gravity - 2;
+                kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
             }
 
-            //점프하고 있지 않을 시 Y값에 있도록 - 효진
+            //점프하고 있지 않을 시 Y값에 있도록
             if (kittyPos.y >= KITTY_Y_BOTTOM) {
                 kittyPos.y = KITTY_Y_BOTTOM;
                 isBottom = true;
             }
 
-            //점프 높이 제한(하늘위로 계속 올라가지 않도록) -효진
+            //점프 높이 제한
             if (kittyPos.y <= KITTY_Y_BOTTOM - 210)
             {
                 isJumping = false;
                 score += 3;
             }
-            character.setPosition(kittyPos.x, kittyPos.y);
+            kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
             //장애물과 캐릭터 충돌 -효진
-           FloatRect characterBounds = character.getKittySprite(index).getGlobalBounds();
+            FloatRect characterBounds = kittySprite[index].getGlobalBounds();
+            for (int i = 0; i < obstacleCnt; i++) {
+                FloatRect obstacleBounds = obstacleSprite[i].getGlobalBounds();
 
-           for (int i = 0; i < obs.getObstacleCnt(); i++) {
-               FloatRect obstacleBounds = obs.getSprites(i).getGlobalBounds();
+                if (characterBounds.intersects(obstacleBounds)) {
+                    currentP = EndP;
+                    for (int j = 0; j < obstacleCnt; j++)
+                        obstaclePos[j].x = WIDTH;
+                    break;
+                }
+            }
 
-               if (characterBounds.intersects(obstacleBounds)==true) {
-                   
-                   for (int j = 0; j < obs.getObstacleCnt(); j++)
-                       obs.setObstaclePosX(j, WIDTH);
-                   currentP = EndP;
-                   break;
-               }
-           }
+            int distance = rand() % 330 + 310;
+
             //장애물 움직임 
-            obs.moveObatacle();
+            for (int i = 0; i < obstacleCnt; i++) {
+                if (obstaclePos[i].x <= -30)
+                {
+                    //obstacleSpeed = rand() % 2 + (obstacleSpeed - 1);
+                    obstaclePos[i].x = WIDTH + (i * distance);
+                }
+                else
+                {
+                    obstaclePos[i].x -= obstacleSpeed;
+                }
+                obstacleSprite[i].setPosition(obstaclePos[i].x, obstaclePos[i].y);
+            }
+
 
             // 구름 움직임
             cloud.moveCloud();
@@ -228,7 +268,7 @@ void gamePage::run() {
 
             if (score > maxScore) maxScore = score;
 
-            obs.setObstacleSpeed(7);
+            obstacleSpeed = 7;
 
             window.clear();
             endP.draw(window);
@@ -238,7 +278,12 @@ void gamePage::run() {
         } // 화면 전환 기능 - 지수
 
         //캐릭터 다리움직임 - 효진
-        character.move(frame, frameSpeed, kittyPos.y, changeCharacter);
+        frame += frameSpeed;
+        if (frame > changeCharacter) {
+            frame -= changeCharacter;
+            index++;
+            if (index >= 2) index = 0;
+        }
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
         window.display();
