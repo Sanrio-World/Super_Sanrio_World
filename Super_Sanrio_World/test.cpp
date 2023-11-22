@@ -5,21 +5,19 @@
 #include <cstdlib>
 #include <ctime>
 
+#include "gamePage.h"
 #include "startPage.h"
 #include "endPage.h"
-#include "position.h"
 #include "obstacle.h"
+#include "position.h"
+#include "cloud.h"
 
 using namespace sf;
 using namespace std;
 
 #define WIDTH 840
 #define HEIGHT 480
-
-/*struct Position {
-    int x;
-    int y;
-};*/
+#define KITTY_Y_BOTTOM 350
 
 enum CurrentP {
     StartP,
@@ -27,40 +25,51 @@ enum CurrentP {
     EndP
 };
 
-class Button {
+static int index = 0;
+
+class Game {
 public:
-    Button(const std::string& texturePath, Vector2f position) {
 
-        sprite.setTexture(texture);
-        sprite.setPosition(position);
+    Game(const std::string& characterPath1, const std::string& characterPath2) {
+        kitty1.loadFromFile(characterPath1);
+        kitty2.loadFromFile(characterPath2);
+        kittySprite[0] = Sprite(kitty1);
+        kittySprite[1] = Sprite(kitty2);
     }
-
-    bool isClicked(Vector2f mousePos) const {
-        return sprite.getGlobalBounds().contains(mousePos);
+    void move(float& frame, float frameSpeed, int Kitty_y, int changeCharacter) {
+        frame += frameSpeed;
+        if (frame > changeCharacter && Kitty_y == KITTY_Y_BOTTOM) {
+            frame -= changeCharacter;
+            index++;
+            if (index >= 2) index = 0;
+        }
     }
-
+    void setPosition(int Kitty_x, int Kitty_y) {
+        kittySprite[index].setPosition(Kitty_x, Kitty_y);
+    }
     void draw(RenderWindow& window) const {
-        window.draw(sprite);
+        window.draw(kittySprite[index]);
     }
 
+    Sprite getKittySprite(int i) { return kittySprite[i]; }
 private:
-    Texture texture;
-    Sprite sprite;
+    Texture kitty1;
+    Texture kitty2;
+    Sprite kittySprite[2];
+    int Kitty_x;
+    int Kitty_y;
+    int changeCharacter;
+    float frame;
+    float frameSpeed;
 };
 
-int main(void)
-{
+void main() {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
     startPage startP("resources/startpage.png");
     endPage endP("resources/endpage.png");
-
-    // 배경 음악
-    Music music;
-    if (!music.openFromFile("resources/sanrio_world_bgm.ogg"))
-        music.play();
-
+    Game game("resources/character1.png", "resources/character2.png");
 
     // 최고 기록
     int maxScore = 0;
@@ -76,21 +85,12 @@ int main(void)
 
     CurrentP currentP = StartP;
 
+    srand(time(nullptr)); // 랜덤 시드 초기화
 
     Texture map;
     map.loadFromFile("resources/sanrio_map.png");
     Sprite mapSprite(map);
     mapSprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
-
-    Texture kitty1;
-    kitty1.loadFromFile("resources/character1.png");
-    Texture kitty2;
-    kitty2.loadFromFile("resources/character2.png");
-    Sprite kittySprite[2];
-    kittySprite[0] = Sprite(kitty1);
-    kittySprite[1] = Sprite(kitty2);
-
-    const int KITTY_Y_BOTTOM = HEIGHT - 150;
 
     Position kittyPos;
     kittyPos.x = 70;
@@ -99,26 +99,8 @@ int main(void)
     // 장애물
     Obstacle obs;
 
-    
-
     // 구름
-    const int cloudCnt = 5;
-    Texture cloud[cloudCnt];
-    Position cloudPos[cloudCnt];
-    Sprite cloudSprite[cloudCnt];
-
-    cloud[0].loadFromFile("resources/cloud1.png");
-    cloud[1].loadFromFile("resources/cloud2.png");
-    cloud[2].loadFromFile("resources/cloud3.png");
-    cloud[3].loadFromFile("resources/cloud1.png");
-    cloud[4].loadFromFile("resources/cloud2.png");
-
-    for (int i = 0; i < cloudCnt; i++) {
-        int randomOffset = rand() % 800;
-        cloudPos[i].x = randomOffset;
-        cloudPos[i].y = 60 + (i * 15);
-        cloudSprite[i].setTexture(cloud[i]);
-    }
+    Cloud cloud;
 
     // 점수 측정을 위한 Clock
     Clock clock;
@@ -211,7 +193,19 @@ int main(void)
                 score++;
                 seconds = 0.0f;
 
-                
+                // 시간 흐름에 따라 속도 빨라지기
+                if (seconds >= 90) {
+                    for (int i = 0; i < obs.getObstacleCnt(); i++) {
+                        obs.sumSpeed(0.1);
+                        gravity++;
+                    }
+                }
+                if (seconds >= 200) {
+                    for (int i = 0; i < obs.getObstacleCnt(); i++) {
+                        obs.sumSpeed(0.2);
+                        gravity++;
+                    }
+                }
             }
 
             // 현재 점수와 최고 기록 setting
@@ -221,12 +215,12 @@ int main(void)
             // gampPage draws
             window.clear();
             window.draw(mapSprite);
-            window.draw(kittySprite[index]);
+            cloud.drawCloud(window);
+            game.draw(window);
+            //window.draw(kittySprite[index]);
             window.draw(scoreText);
             window.draw(maxScoreText);
-            for (int i = 0; i < cloudCnt; i++) {
-                window.draw(cloudSprite[i]);
-            }
+            
             for (int i = 0; i < obs.getObstacleCnt(); i++) {
                 window.draw(obs.getSprites(i));
             }
@@ -235,11 +229,11 @@ int main(void)
             if (isJumping == true)
             {
                 kittyPos.y -= gravity;
-                kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+                game.setPosition(kittyPos.x, kittyPos.y);
             }
             else {
                 kittyPos.y += gravity - 2;
-                kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+                game.setPosition(kittyPos.x, kittyPos.y);
             }
 
             //점프하고 있지 않을 시 Y값에 있도록
@@ -254,10 +248,10 @@ int main(void)
                 isJumping = false;
                 score += 3;
             }
-            kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
+            game.setPosition(kittyPos.x, kittyPos.y);
 
             //장애물과 캐릭터 충돌
-            FloatRect characterBounds = kittySprite[index].getGlobalBounds();
+            FloatRect characterBounds = game.getKittySprite(index).getGlobalBounds();
             for (int i = 0; i < obs.getObstacleCnt(); i++) {
                 FloatRect obstacleBounds = obs.getSprites(i).getGlobalBounds();
 
@@ -269,24 +263,13 @@ int main(void)
                 }
             }
 
-            //int distance = rand() % 330 + 310;
+            int distance = rand() % 330 + 310;
 
+            //장애물 움직임
             obs.moveObatacle();
 
-           
-
             // 구름 움직임
-            for (int i = 0; i < cloudCnt; i++) {
-                if (cloudPos[i].x <= -110)
-                {
-                    cloudPos[i].x = WIDTH + 10;
-                }
-                else
-                {
-                    cloudPos[i].x -= 3;
-                }
-                cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
-            }
+            cloud.moveCloud();
         }
         if (currentP == EndP) {
             scoreResultText.setString(to_string(score));
@@ -302,16 +285,9 @@ int main(void)
 
         }
         //캐릭터 다리움직임
-        frame += frameSpeed;
-        if (frame > changeCharacter && kittyPos.y == KITTY_Y_BOTTOM) {
-            frame -= changeCharacter;
-            index++;
-            if (index >= 2) index = 0;
-        }
-
+        game.move(frame, frameSpeed, kittyPos.y, changeCharacter);
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
         window.display();
     };
 }
-
