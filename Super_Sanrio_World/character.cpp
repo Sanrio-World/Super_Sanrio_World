@@ -18,7 +18,7 @@ Character::Character(const std::string& characterPath1, const std::string& chara
 }
 void Character::move(float& frame, float frameSpeed, int Kitty_y, int changeCharacter) {
     frame += frameSpeed;
-    if (frame > changeCharacter && Kitty_y == 310) {
+    if (frame > changeCharacter && Kitty_y == 315) {
         frame -= changeCharacter;
         index++;
         if (index >= 2) index = 0;

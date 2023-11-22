@@ -42,9 +42,6 @@
     <Image Include="..\..\..\..\..\apple.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="..\..\..\..\..\obstacle1.png">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="resources\endpage.png">
       <Filter>리소스 파일</Filter>
     </Image>
@@ -60,10 +57,10 @@
     <Image Include="resources\restart_btn.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="resources\obstacle3.png">
+    <Image Include="resources\obstacle4.png">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="resources\obstacle4.png">
+    <Image Include="resources\obstacle1.png">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

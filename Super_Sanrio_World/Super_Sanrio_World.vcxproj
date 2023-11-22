@@ -142,7 +142,6 @@
     <Image Include="..\..\..\..\..\apple.png" />
     <Image Include="..\..\..\..\..\diecharacter.png" />
     <Image Include="..\..\..\..\..\marioMap.bmp" />
-    <Image Include="..\..\..\..\..\obstacle1.png" />
     <Image Include="..\..\..\..\..\tupli.png" />
     <Image Include="resources\character1.png" />
     <Image Include="resources\character2.png" />
@@ -150,8 +149,8 @@
     <Image Include="resources\cloud2.png" />
     <Image Include="resources\cloud3.png" />
     <Image Include="resources\endpage.png" />
+    <Image Include="resources\obstacle1.png" />
     <Image Include="resources\obstacle2.png" />
-    <Image Include="resources\obstacle3.png" />
     <Image Include="resources\obstacle4.png" />
     <Image Include="resources\restart_btn.png" />
     <Image Include="resources\sanrioMap.bmp" />
