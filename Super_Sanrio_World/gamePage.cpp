@@ -71,7 +71,7 @@ void gamePage::run() {
     float frame = 0.0f;
     float frameSpeed = 0.6f;
 
-    float gravity = 14;
+    float gravity = 15;
     bool isJumping = false;
     bool isBottom = true;
 
@@ -98,25 +98,28 @@ void gamePage::run() {
     kittyPos.x = 70;
     kittyPos.y = KITTY_Y_BOTTOM;
 
-    const int obstacleCnt = 2;
+    // 장애물
+    const int obstacleCnt = 3;
     Texture obstacle[obstacleCnt];
     Position obstaclePos[obstacleCnt];
     Sprite obstacleSprite[obstacleCnt];
+
     obstacle[0].loadFromFile("resources/obstacle1.png");
     obstacle[1].loadFromFile("resources/obstacle2.png");
+    obstacle[2].loadFromFile("resources/obstacle4.png");
 
-    float obstacleSpeed[2];
-    obstacleSpeed[0] = rand() % 6 + 4;
-    obstacleSpeed[1] = rand() % 6 + 4;
+    //float obstacleSpeed = rand() % 4 + 3;
+    float obstacleSpeed = 7;
+    //int distance = rand() % 330 + 310;
+    int obstaclePosition = rand() % 920 + 780;
 
     for (int i = 0; i < obstacleCnt; i++) {
-        int obstaclePosition = rand() % 880 + 700;
-        obstaclePos[i].x = obstaclePosition;
+        obstaclePos[i].x = obstaclePosition + (i * 310);
         obstaclePos[i].y = 350;
         obstacleSprite[i].setTexture(obstacle[i]);
     }
 
-
+    // 구름
     const int cloudCnt = 5;
     Texture cloud[cloudCnt];
     Position cloudPos[cloudCnt];
@@ -128,7 +131,6 @@ void gamePage::run() {
     cloud[3].loadFromFile("resources/cloud1.png");
     cloud[4].loadFromFile("resources/cloud2.png");
 
-
     for (int i = 0; i < cloudCnt; i++) {
         int randomOffset = rand() % 800;
         cloudPos[i].x = randomOffset;
@@ -136,6 +138,7 @@ void gamePage::run() {
         cloudSprite[i].setTexture(cloud[i]);
     }
 
+    // 점수 측정을 위한 Clock
     Clock clock;
     float seconds = 0.0f;
     int score = 0;
@@ -225,28 +228,27 @@ void gamePage::run() {
             if (seconds >= 0.3f) {
                 score++;
                 seconds = 0.0f;
-                if (score >= 30) {
+
+                // 시간 흐름에 따라 속도 빨라지기
+                if (seconds >= 90) {
                     for (int i = 0; i < obstacleCnt; i++) {
-                        obstacleSpeed[i] += 0.2;
-                        gravity = 14;
+                        obstacleSpeed += 0.1;
+                        gravity++;
                     }
                 }
-                if (score >= 90) {
+                if (seconds >= 200) {
                     for (int i = 0; i < obstacleCnt; i++) {
-                        obstacleSpeed[i] += 0.2;
-                        gravity = 14;
-                    }
-                }
-                if (score >= 200) {
-                    for (int i = 0; i < obstacleCnt; i++) {
-                        obstacleSpeed[i] += 0.2;
+                        obstacleSpeed += 0.2;
                         gravity++;
                     }
                 }
             }
+
+            // 현재 점수와 최고 기록 setting
             scoreText.setString(to_string(score));
             maxScoreText.setString(to_string(maxScore));
 
+            // gampPage draws
             window.clear();
             window.draw(mapSprite);
             window.draw(kittySprite[index]);
@@ -259,15 +261,15 @@ void gamePage::run() {
                 window.draw(obstacleSprite[i]);
             }
 
+            // 캐릭터 점프 설정
             if (isJumping == true)
             {
                 kittyPos.y -= gravity;
                 kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
             }
             else {
-                kittyPos.y += gravity - 3;
+                kittyPos.y += gravity - 2;
                 kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
-
             }
 
             //점프하고 있지 않을 시 Y값에 있도록
@@ -275,37 +277,40 @@ void gamePage::run() {
                 kittyPos.y = KITTY_Y_BOTTOM;
                 isBottom = true;
             }
+
             //점프 높이 제한
-            if (kittyPos.y <= KITTY_Y_BOTTOM - 250)
+            if (kittyPos.y <= KITTY_Y_BOTTOM - 210)
             {
                 isJumping = false;
+                score += 3;
             }
             kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
             //장애물과 캐릭터 충돌
-            currentP = GameP;
             FloatRect characterBounds = kittySprite[index].getGlobalBounds();
             for (int i = 0; i < obstacleCnt; i++) {
                 FloatRect obstacleBounds = obstacleSprite[i].getGlobalBounds();
 
                 if (characterBounds.intersects(obstacleBounds)) {
                     currentP = EndP;
-                    obstaclePos[0].x = WIDTH;
-                    obstaclePos[1].x = WIDTH;
+                    for (int j = 0; j < obstacleCnt; j++)
+                        obstaclePos[j].x = WIDTH;
                     break;
                 }
             }
+
+            int distance = rand() % 330 + 310;
 
             //장애물 움직임
             for (int i = 0; i < obstacleCnt; i++) {
                 if (obstaclePos[i].x <= -30)
                 {
-                    obstacleSpeed[i] = rand() % 7 + (obstacleSpeed[i] - 3);
-                    obstaclePos[i].x = WIDTH;
+                    //obstacleSpeed = rand() % 2 + (obstacleSpeed - 1);
+                    obstaclePos[i].x = WIDTH + (i * distance);
                 }
                 else
                 {
-                    obstaclePos[i].x -= obstacleSpeed[i];
+                    obstaclePos[i].x -= obstacleSpeed;
                 }
                 obstacleSprite[i].setPosition(obstaclePos[i].x, obstaclePos[i].y);
             }
@@ -328,8 +333,7 @@ void gamePage::run() {
 
             if (score > maxScore) maxScore = score;
 
-            obstacleSpeed[0] = rand() % 5 + 3;
-            obstacleSpeed[1] = rand() % 5 + 3;
+            obstacleSpeed = 7;
 
             window.clear();
             endP.draw(window);

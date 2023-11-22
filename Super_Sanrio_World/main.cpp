@@ -1,6 +1,6 @@
 #include "gamePage.h"
 
-int main1(void)
+int main(void)
 {
     gamePage gameP;
     gameP.run();
