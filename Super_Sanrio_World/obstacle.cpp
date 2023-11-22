@@ -26,6 +26,12 @@ Obstacle::Obstacle() {
     }
 }
 
+void Obstacle::drawObstacle(RenderWindow& w) {
+    for (int i = 0; i < obstacleCnt; i++) {
+        w.draw(obstacleSprite[i]);
+    }
+}
+
 // 장애물 개수 getter
 int Obstacle::getObstacleCnt() { return obstacleCnt; }
 

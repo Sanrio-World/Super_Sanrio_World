@@ -8,11 +8,10 @@
 #include "cloud.h"
 #include "endPage.h"
 #include "gamePage.h"
-#include "obstacle.h"
-#include "obstacle.h"
 #include "startPage.h"
 #include "character.h"
 #include "position.h"
+#include "obstacle.h"
 #include "scoreText.h"
 
 using namespace sf;
@@ -20,7 +19,7 @@ using namespace std;
 
 #define WIDTH 840
 #define HEIGHT 480
-#define KITTY_Y_BOTTOM 340
+#define KITTY_Y_BOTTOM 310
 
 enum CurrentP {
     StartP,
@@ -67,7 +66,7 @@ void gamePage::run() {
     // 장애물
     Obstacle obs;
 
-    // 구름
+    // 구름 - 지수
     Cloud cloud;
 
     // 점수 측정을 위한 시계
@@ -86,7 +85,7 @@ void gamePage::run() {
     ScoreText scoreText(font,33,10,5,Color::White);
     ScoreText scoreResultText(font, 100, 340, 165, Color::Magenta);
 
-    // 게임 재시작 버튼
+    // 게임 재시작 버튼 - 지수
     Texture restartBtn;
     restartBtn.loadFromFile("resources/restart_btn.png");
     Sprite reStartBtn_Sprite(restartBtn);
@@ -106,7 +105,7 @@ void gamePage::run() {
             // 키가 눌렸을 때
             if (e.type == Event::KeyPressed) {
 
-                // 시작화면에서 Enter Key가 눌렸을 때
+                // 시작화면에서 Enter Key가 눌렸을 때 - 지수
                 if (e.key.code == Keyboard::Enter && currentP == StartP) {
                     currentP = GameP; // Enter 키를 누르면 게임 화면으로 전환
                     cout << "Switched to GameP." << endl;
@@ -121,22 +120,22 @@ void gamePage::run() {
                 }
             }
 
-            if (e.type == Event::MouseButtonPressed) {
-                if (e.mouseButton.button == Mouse::Left) {
-                    Vector2i mousePos = Mouse::getPosition(window);
-                    Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
+            // 재시작 버튼 클릭 구현 - 지수
+            if (e.type == Event::MouseButtonPressed) { // 마우스가 눌리면
+                if (e.mouseButton.button == Mouse::Left) { // 마우스의 왼쪽 버튼이 눌리면
+                    Vector2i mousePos = Mouse::getPosition(window); // 프레임 안에서 마우스로 누른 곳
 
+                    // 재시작 버튼의 경계에 마우스로 누른 곳이 포함되었다면
                     if (reStartBtn_Sprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-
-                        currentP = StartP;
-                        cout << "클릭" << endl;
-                        score = 0;
-                        gravity = 14;
+                        currentP = StartP; // Start 페이지로 변경
+                        score = 0;      // 점수 초기화
+                        gravity = 15;   // 점프할 때 내려오는 속도 초기화
                     }
                 }
             }
         }
 
+        // 화면 전환 구현 - 지수
         if (currentP == StartP) {
             // 시작화면에서 게임화면으로 넘어가게
             startP.draw(window);
@@ -149,7 +148,7 @@ void gamePage::run() {
                 score++;
                 seconds = 0.0f;
 
-                // 시간 흐름에 따라 속도 빨라지기
+                // 시간 흐름에 따라 속도, 점프할 때 내려오는 속도 증가 - 지수
                 if (seconds >= 90) {
                     for (int i = 0; i < obs.getObstacleCnt(); i++) {
                         obs.sumSpeed(0.1);
@@ -164,21 +163,20 @@ void gamePage::run() {
                 }
             }
 
-            // 현재 점수와 최고 기록 setting
+            // 현재 점수
             scoreText.setString(score);
+
+            // 최고 기록 기능 - 지수
             maxscoreText.setString(maxScore);
 
             // gampPage draws
             window.clear();
             window.draw(mapSprite);
-           
             character.draw(window);
             scoreText.draw(window);
             maxscoreText.draw(window);
             cloud.drawCloud(window);
-            for (int i = 0; i < obs.getObstacleCnt(); i++) {
-                window.draw(obs.getSprites(i));
-            }
+            obs.drawObstacle(window);
 
             // 캐릭터 점프 설정 - 효진
             if (isJumping == true)
@@ -207,19 +205,18 @@ void gamePage::run() {
 
             //장애물과 캐릭터 충돌 -효진
            FloatRect characterBounds = character.getKittySprite(index).getGlobalBounds();
+
            for (int i = 0; i < obs.getObstacleCnt(); i++) {
                FloatRect obstacleBounds = obs.getSprites(i).getGlobalBounds();
 
                if (characterBounds.intersects(obstacleBounds)==true) {
-                   currentP = EndP;
+                   
                    for (int j = 0; j < obs.getObstacleCnt(); j++)
                        obs.setObstaclePosX(j, WIDTH);
+                   currentP = EndP;
                    break;
                }
            }
-
-            int distance = rand() % 330 + 310;
-
             //장애물 움직임 
             obs.moveObatacle();
 
@@ -238,7 +235,8 @@ void gamePage::run() {
             scoreResultText.draw(window);
             window.draw(reStartBtn_Sprite);
 
-        }
+        } // 화면 전환 기능 - 지수
+
         //캐릭터 다리움직임 - 효진
         character.move(frame, frameSpeed, kittyPos.y, changeCharacter);
         HWND hWndConsole = GetConsoleWindow();
@@ -246,5 +244,3 @@ void gamePage::run() {
         window.display();
     };
 }
-
-

@@ -13,6 +13,9 @@ class Obstacle : Position {
 public:
     Obstacle();
 
+    // 장애물 draw
+    void drawObstacle(RenderWindow& w);
+
     // 장애물 개수 getter
     int getObstacleCnt();
 
