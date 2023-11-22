@@ -86,6 +86,9 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="obstacle.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="character.h">
@@ -98,6 +101,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="endPage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="obstacle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="position.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,18 +5,21 @@
 #include <cstdlib>
 #include <ctime>
 
-// #include "start_page.h"
+#include "startPage.h"
+#include "endPage.h"
+#include "position.h"
+#include "obstacle.h"
+
+using namespace sf;
+using namespace std;
 
 #define WIDTH 840
 #define HEIGHT 480
 
-using namespace std;
-using namespace sf;
-
-struct Position {
+/*struct Position {
     int x;
     int y;
-};
+};*/
 
 enum CurrentP {
     StartP,
@@ -27,9 +30,6 @@ enum CurrentP {
 class Button {
 public:
     Button(const std::string& texturePath, Vector2f position) {
-        /*if (!texture.loadFromFile(texturePath)) {
-            cout <<
-        }*/
 
         sprite.setTexture(texture);
         sprite.setPosition(position);
@@ -48,16 +48,20 @@ private:
     Sprite sprite;
 };
 
-int main(void)
-{
+void main() {
+    srand(time(nullptr)); // 랜덤 시드 초기화
+
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
+
+    startPage startP("resources/startpage.png");
+    endPage endP("resources/endpage.png");
 
     // 배경 음악
     Music music;
     if (!music.openFromFile("resources/sanrio_world_bgm.ogg"))
-        return -1; // error
-    music.play();
+        music.play();
+
 
     // 최고 기록
     int maxScore = 0;
@@ -67,13 +71,12 @@ int main(void)
     float frame = 0.0f;
     float frameSpeed = 0.6f;
 
-    float gravity = 14;
+    float gravity = 15;
     bool isJumping = false;
     bool isBottom = true;
 
     CurrentP currentP = StartP;
 
-    srand(time(nullptr)); // 랜덤 시드 초기화
 
     Texture map;
     map.loadFromFile("resources/sanrio_map.png");
@@ -94,25 +97,12 @@ int main(void)
     kittyPos.x = 70;
     kittyPos.y = KITTY_Y_BOTTOM;
 
-    const int obstacleCnt = 2;
-    Texture obstacle[obstacleCnt];
-    Position obstaclePos[obstacleCnt];
-    Sprite obstacleSprite[obstacleCnt];
-    obstacle[0].loadFromFile("resources/obstacle1.png");
-    obstacle[1].loadFromFile("resources/obstacle2.png");
+    // 장애물
+    Obstacle obs;
 
-    float obstacleSpeed[2];
-    obstacleSpeed[0] = rand() % 6 + 4;
-    obstacleSpeed[1] = rand() % 6 + 4;
+    
 
-    for (int i = 0; i < obstacleCnt; i++) {
-        int obstaclePosition = rand() % 880 + 700;
-        obstaclePos[i].x = obstaclePosition;
-        obstaclePos[i].y = 350;
-        obstacleSprite[i].setTexture(obstacle[i]);
-    }
-
-
+    // 구름
     const int cloudCnt = 5;
     Texture cloud[cloudCnt];
     Position cloudPos[cloudCnt];
@@ -124,7 +114,6 @@ int main(void)
     cloud[3].loadFromFile("resources/cloud1.png");
     cloud[4].loadFromFile("resources/cloud2.png");
 
-
     for (int i = 0; i < cloudCnt; i++) {
         int randomOffset = rand() % 800;
         cloudPos[i].x = randomOffset;
@@ -132,18 +121,7 @@ int main(void)
         cloudSprite[i].setTexture(cloud[i]);
     }
 
-   
-    Texture startPage;
-    startPage.loadFromFile("resources/startpage.png");
-    Sprite startPage_Sprite(startPage);
-    startPage_Sprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
-
-    //endPage.cpp
-    Texture endPage;
-    endPage.loadFromFile("resources/endpage.png");
-    Sprite endPage_Sprite(endPage);
-    endPage_Sprite.setTextureRect(IntRect(0, 0, WIDTH, HEIGHT));
-
+    // 점수 측정을 위한 Clock
     Clock clock;
     float seconds = 0.0f;
     int score = 0;
@@ -152,7 +130,6 @@ int main(void)
     if (!font.loadFromFile("C:\\Windows\\Fonts\\H2GSRB.ttf"))
     {
         printf("폰트 불러오기 실패\n");
-        return -1;
     }
 
     Text maxScoreText;
@@ -178,9 +155,6 @@ int main(void)
     restartBtn.loadFromFile("resources/restart_btn.png");
     Sprite reStartBtn_Sprite(restartBtn);
     reStartBtn_Sprite.setPosition(550, 350);
-
-    //Button restartBtn("resources/restart_btn.png", Vector2f(550, 350));
-
 
     while (window.isOpen())
     {
@@ -217,7 +191,7 @@ int main(void)
                     Vector2f mousePosFloat(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
 
                     if (reStartBtn_Sprite.getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        
+
                         currentP = StartP;
                         cout << "클릭" << endl;
                         score = 0;
@@ -228,9 +202,8 @@ int main(void)
         }
 
         if (currentP == StartP) {
-            window.clear();
             // 시작화면에서 게임화면으로 넘어가게
-            window.draw(startPage_Sprite);
+            startP.draw(window);
         }
         if (currentP == GameP) {
             //점수
@@ -238,28 +211,15 @@ int main(void)
             if (seconds >= 0.3f) {
                 score++;
                 seconds = 0.0f;
-                if (score >= 30) {
-                    for (int i = 0; i < obstacleCnt; i++) {
-                        obstacleSpeed[i] += 0.2;
-                        gravity = 14;
-                    }
-                }
-                if (score >= 90) {
-                    for (int i = 0; i < obstacleCnt; i++) {
-                        obstacleSpeed[i] += 0.2;
-                        gravity = 14;
-                    }
-                }
-                if (score >= 200) {
-                    for (int i = 0; i < obstacleCnt; i++) {
-                        obstacleSpeed[i] += 0.2;
-                        gravity++;
-                    }
-                }
+
+                
             }
+
+            // 현재 점수와 최고 기록 setting
             scoreText.setString(to_string(score));
             maxScoreText.setString(to_string(maxScore));
 
+            // gampPage draws
             window.clear();
             window.draw(mapSprite);
             window.draw(kittySprite[index]);
@@ -268,19 +228,19 @@ int main(void)
             for (int i = 0; i < cloudCnt; i++) {
                 window.draw(cloudSprite[i]);
             }
-            for (int i = 0; i < obstacleCnt; i++) {
-                window.draw(obstacleSprite[i]);
+            for (int i = 0; i < obs.getObstacleCnt(); i++) {
+                window.draw(obs.getSprites(i));
             }
 
+            // 캐릭터 점프 설정
             if (isJumping == true)
             {
                 kittyPos.y -= gravity;
                 kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
             }
             else {
-                kittyPos.y += gravity - 3;
+                kittyPos.y += gravity - 2;
                 kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
-
             }
 
             //점프하고 있지 않을 시 Y값에 있도록
@@ -288,40 +248,33 @@ int main(void)
                 kittyPos.y = KITTY_Y_BOTTOM;
                 isBottom = true;
             }
+
             //점프 높이 제한
-            if (kittyPos.y <= KITTY_Y_BOTTOM - 250)
+            if (kittyPos.y <= KITTY_Y_BOTTOM - 210)
             {
                 isJumping = false;
+                score += 3;
             }
             kittySprite[index].setPosition(kittyPos.x, kittyPos.y);
 
             //장애물과 캐릭터 충돌
-            currentP = GameP;
             FloatRect characterBounds = kittySprite[index].getGlobalBounds();
-            for (int i = 0; i < obstacleCnt; i++) {
-                FloatRect obstacleBounds = obstacleSprite[i].getGlobalBounds();
+            for (int i = 0; i < obs.getObstacleCnt(); i++) {
+                FloatRect obstacleBounds = obs.getSprites(i).getGlobalBounds();
 
                 if (characterBounds.intersects(obstacleBounds)) {
                     currentP = EndP;
-                    obstaclePos[0].x = WIDTH;
-                    obstaclePos[1].x = WIDTH;
+                    for (int j = 0; j < obs.getObstacleCnt(); j++)
+                        obs.setObstaclePosX(j, WIDTH);
                     break;
                 }
             }
 
-            //장애물 움직임
-            for (int i = 0; i < obstacleCnt; i++) {
-                if (obstaclePos[i].x <= -30)
-                {
-                    obstacleSpeed[i] = rand() % 7 + (obstacleSpeed[i] - 3);
-                    obstaclePos[i].x = WIDTH;
-                }
-                else
-                {
-                    obstaclePos[i].x -= obstacleSpeed[i];
-                }
-                obstacleSprite[i].setPosition(obstaclePos[i].x, obstaclePos[i].y);
-            }
+            //int distance = rand() % 330 + 310;
+
+            obs.moveObatacle();
+
+           
 
             // 구름 움직임
             for (int i = 0; i < cloudCnt; i++) {
@@ -341,16 +294,14 @@ int main(void)
 
             if (score > maxScore) maxScore = score;
 
-            obstacleSpeed[0] = rand() % 5 + 3;
-            obstacleSpeed[1] = rand() % 5 + 3;
+            obs.setObstacleSpeed(7);
 
             window.clear();
-            window.draw(endPage_Sprite);
+            endP.draw(window);
             window.draw(scoreResultText);
             window.draw(reStartBtn_Sprite);
 
         }
-
         //캐릭터 다리움직임
         frame += frameSpeed;
         if (frame > changeCharacter && kittyPos.y == KITTY_Y_BOTTOM) {
@@ -362,6 +313,6 @@ int main(void)
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
         window.display();
-    }
-    return 0;
+    };
 }
+
