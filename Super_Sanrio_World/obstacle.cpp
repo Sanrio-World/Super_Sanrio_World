@@ -21,6 +21,7 @@ Obstacle::Obstacle() {
     for (int i = 0; i < obstacleCnt; i++) {
         obstaclePos[i].x = obstaclePosition + (i * 310);
         obstaclePos[i].y = 350;
+        obstacleSprite[i].setPosition(obstaclePos[i].x, obstaclePos[i].y);
         obstacleSprite[i].setTexture(obstacle[i]);
     }
 }
