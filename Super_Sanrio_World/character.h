@@ -10,9 +10,9 @@
 
 using namespace sf;
 using namespace std;
-class character : Position {
+class Character : Position {
 public :
-	character(const std::string&, const std::string&);
+    Character(const std::string&, const std::string&);
 	void move(float&, float, int, int);
 	void setPosition(int, int);
 	void draw(RenderWindow&);

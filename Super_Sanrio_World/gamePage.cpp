@@ -11,6 +11,7 @@
 #include "obstacle.h"
 #include "character.h"
 #include "position.h"
+#include "cloud.h"
 
 using namespace sf;
 using namespace std;
@@ -25,17 +26,14 @@ enum CurrentP {
     EndP
 };
 
-
-
 void gamePage::run() {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
     window.setFramerateLimit(60);
 
     startPage startP("resources/startpage.png");
     endPage endP("resources/endpage.png");
-    character character("resources/character1.png", "resources/character2.png");
+    Character character("resources/character1.png", "resources/character2.png");
 
-   
      // 최고 기록
     int maxScore = 0;
 
@@ -65,23 +63,7 @@ void gamePage::run() {
     Obstacle obs;
 
     // 구름
-    const int cloudCnt = 5;
-    Texture cloud[cloudCnt];
-    Position cloudPos[cloudCnt];
-    Sprite cloudSprite[cloudCnt];
-
-    cloud[0].loadFromFile("resources/cloud1.png");
-    cloud[1].loadFromFile("resources/cloud2.png");
-    cloud[2].loadFromFile("resources/cloud3.png");
-    cloud[3].loadFromFile("resources/cloud1.png");
-    cloud[4].loadFromFile("resources/cloud2.png");
-
-    for (int i = 0; i < cloudCnt; i++) {
-        int randomOffset = rand() % 800;
-        cloudPos[i].x = randomOffset;
-        cloudPos[i].y = 60 + (i * 15);
-        cloudSprite[i].setTexture(cloud[i]);
-    }
+    Cloud cloud;
 
     // 점수 측정을 위한 Clock
     Clock clock;
@@ -200,9 +182,7 @@ void gamePage::run() {
             character.draw(window);
             window.draw(scoreText);
             window.draw(maxScoreText);
-            for (int i = 0; i < cloudCnt; i++) {
-                window.draw(cloudSprite[i]);
-            }
+            cloud.drawCloud(window);
             for (int i = 0; i < obs.getObstacleCnt(); i++) {
                 window.draw(obs.getSprites(i));
             }
@@ -251,17 +231,7 @@ void gamePage::run() {
             obs.moveObatacle();
 
             // 구름 움직임
-            for (int i = 0; i < cloudCnt; i++) {
-                if (cloudPos[i].x <= -110)
-                {
-                    cloudPos[i].x = WIDTH + 10;
-                }
-                else
-                {
-                    cloudPos[i].x -= 3;
-                }
-                cloudSprite[i].setPosition(cloudPos[i].x, cloudPos[i].y);
-            }
+            cloud.moveCloud();
         }
         if (currentP == EndP) {
             scoreResultText.setString(to_string(score));
