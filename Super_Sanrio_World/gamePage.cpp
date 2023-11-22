@@ -9,6 +9,7 @@
 #include "startPage.h"
 #include "endPage.h"
 #include "obstacle.h"
+#include "character.h"
 #include "position.h"
 
 using namespace sf;
@@ -16,7 +17,7 @@ using namespace std;
 
 #define WIDTH 840
 #define HEIGHT 480
-#define KITTY_Y_BOTTOM 350
+#define KITTY_Y_BOTTOM 320
 
 enum CurrentP {
     StartP,
@@ -24,65 +25,7 @@ enum CurrentP {
     EndP
 };
 
-static int index = 0;
 
-class Game {
-public :
-    
-    Game(const std::string& characterPath1, const std::string& characterPath2) {
-        kitty1.loadFromFile(characterPath1);
-        kitty2.loadFromFile(characterPath2);
-        kittySprite[0] = Sprite(kitty1);
-        kittySprite[1] = Sprite(kitty2);
-    }
-    void move(float& frame,float frameSpeed, int Kitty_y,int changeCharacter) {
-        frame += frameSpeed;
-        if (frame > changeCharacter && Kitty_y == KITTY_Y_BOTTOM) {
-            frame -= changeCharacter;
-            index++;
-            if (index >= 2) index = 0;
-        }
-    }
-    void setPosition(int Kitty_x,int Kitty_y) {
-        kittySprite[index].setPosition(Kitty_x, Kitty_y);
-    }
-    void draw(RenderWindow& window) const {
-        window.draw(kittySprite[index]);
-    }
-
-    Sprite getKittySprite(int i) { return kittySprite[i]; }
-private:
-    Texture kitty1;
-    Texture kitty2;
-    Sprite kittySprite[2];
-    int Kitty_x;
-    int Kitty_y;
-    int changeCharacter;
-    float frame;
-    float frameSpeed;
-
-};
-
-class Button {
-public:
-    Button(const std::string& texturePath, Vector2f position) {
-
-        sprite.setTexture(texture);
-        sprite.setPosition(position);
-    }
-
-    bool isClicked(Vector2f mousePos) const {
-        return sprite.getGlobalBounds().contains(mousePos);
-    }
-
-    void draw(RenderWindow& window) const {
-        window.draw(sprite);
-    }
-
-private:
-    Texture texture;
-    Sprite sprite;
-};
 
 void gamePage::run() {
     RenderWindow window(VideoMode(840, 480), "Super Sanrio World");
@@ -90,14 +33,14 @@ void gamePage::run() {
 
     startPage startP("resources/startpage.png");
     endPage endP("resources/endpage.png");
-    Game game("resources/character1.png", "resources/character2.png");
+    character character("resources/character1.png", "resources/character2.png");
 
    
      // 최고 기록
     int maxScore = 0;
 
     const int changeCharacter = 5;
-    int index = 0;
+    const int index = 0;
     float frame = 0.0f;
     float frameSpeed = 0.6f;
 
@@ -254,8 +197,7 @@ void gamePage::run() {
             window.clear();
             window.draw(mapSprite);
            
-            game.draw(window);
-            //window.draw(kittySprite[index]);
+            character.draw(window);
             window.draw(scoreText);
             window.draw(maxScoreText);
             for (int i = 0; i < cloudCnt; i++) {
@@ -269,11 +211,11 @@ void gamePage::run() {
             if (isJumping == true)
             {
                 kittyPos.y -= gravity;
-                game.setPosition(kittyPos.x, kittyPos.y);
+                character.setPosition(kittyPos.x, kittyPos.y);
             }
             else {
                 kittyPos.y += gravity - 2;
-                game.setPosition(kittyPos.x, kittyPos.y);
+                character.setPosition(kittyPos.x, kittyPos.y);
             }
 
             //점프하고 있지 않을 시 Y값에 있도록
@@ -288,10 +230,10 @@ void gamePage::run() {
                 isJumping = false;
                 score += 3;
             }
-            game.setPosition(kittyPos.x, kittyPos.y);
+            character.setPosition(kittyPos.x, kittyPos.y);
 
             //장애물과 캐릭터 충돌
-           FloatRect characterBounds = game.getKittySprite(index).getGlobalBounds();
+           FloatRect characterBounds = character.getKittySprite(index).getGlobalBounds();
            for (int i = 0; i < obs.getObstacleCnt(); i++) {
                FloatRect obstacleBounds = obs.getSprites(i).getGlobalBounds();
 
@@ -335,10 +277,11 @@ void gamePage::run() {
 
         }
         //캐릭터 다리움직임
-        game.move(frame, frameSpeed,kittyPos.y, changeCharacter);
+        character.move(frame, frameSpeed, kittyPos.y, changeCharacter);
         HWND hWndConsole = GetConsoleWindow();
         ShowWindow(hWndConsole, SW_HIDE);
         window.display();
     };
 }
+
 
